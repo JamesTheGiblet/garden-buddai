@@ -5,7 +5,7 @@
 **GardenManager Pro** is a complete business management system designed specifically for garden contractors, landscapers, and lawn care professionals. Manage clients, schedule jobs, track payments, and grow your business—all while giving your clients a FREE companion app that keeps you top-of-mind.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://gardenbuddai.netlify.app/gardenmanagerpro.html)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://garden-buddy-ai.netlify.app/GardenManager%20AI/)
 [![Status](https://img.shields.io/badge/status-beta-yellow)]()
 
 ---
@@ -766,9 +766,9 @@ Email: <contribute@gardenbuddy.app>
 
 ## 🔗 Links
 
-- **Landing Page:** [gardenbuddai.netlify.app](https://gardenbuddai.netlify.app)
-- **Live Demo:** [Try GardenManager Pro](https://gardenbuddai.netlify.app/gardenmanagerpro.html)
-- **Client App:** [Try GardenBuddy](https://gardenbuddai.netlify.app/garden-buddai.html)
+- **Landing Page:** [garden-buddy-ai.netlify.app](https://garden-buddy-ai.netlify.app)
+- **Live Demo:** [Try GardenManager Pro](https://garden-buddy-ai.netlify.app/GardenManager%20AI/)
+- **Client App:** [Try GardenBuddy](https://garden-buddy-ai.netlify.app/GardenBuddy%20AI/)
 - **API Docs:** [docs.gardenbuddy.app/api](https://docs.gardenbuddy.app/api)
 - **Roadmap:** [github.com/gibletscreations/gardenbuddy/ROADMAP.md](https://github.com/gibletscreations/gardenbuddy/blob/main/ROADMAP.md)
 

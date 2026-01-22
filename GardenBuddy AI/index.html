@@ -262,7 +262,7 @@
 
         .message.assistant .message-bubble {
             background: white;
-            color: #000000;
+            color: var(--text-primary);
             border: 1px solid var(--border-color);
             border-bottom-left-radius: 4px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -330,7 +330,8 @@
 
         .input-field {
             flex: 1;
-            background: var(--bg-primary);
+            background: #ffffff;
+            color: #000000;
             border: 2px solid var(--border-color);
             border-radius: 20px;
             padding: 0.75rem 1rem;
@@ -642,11 +643,6 @@
             
             .input-area {
                 background: var(--bg-chat);
-            }
-            
-            .input-field {
-                background: var(--bg-primary);
-                color: var(--text-primary);
             }
             
             .command-hint {
@@ -1041,6 +1037,7 @@
             <div class="input-area">
                 <div class="command-hints">
                     <div class="command-hint" onclick="insertCommand('/teach ')">💡 /teach</div>
+                    <div class="command-hint" onclick="insertCommand('/gist add ')">📝 /gist</div>
                     <div class="command-hint" onclick="insertCommand('/wrong ')">✏️ /wrong</div>
                     <div class="command-hint" onclick="sendMessage('/why')">/why</div>
                     <div class="command-hint" onclick="sendMessage('/help')">/help</div>
@@ -1153,6 +1150,7 @@
         let gardenMemory = {
             teachings: [],
             corrections: [],
+            gists: [],
             gardenLayout: {
                 beds: [],
                 sunPatterns: [],
@@ -1190,6 +1188,7 @@
                     // Ensure new fields exist
                     if (!gardenMemory.calendar) gardenMemory.calendar = [];
                     if (!gardenMemory.settings) gardenMemory.settings = { location: 'London', apiKey: '' };
+                    if (!gardenMemory.gists) gardenMemory.gists = [];
                     
                     updateStatsDisplay();
                     renderCalendar();
@@ -1540,6 +1539,9 @@
 
         function initUserData(user) {
             document.getElementById('clientIdDisplay').innerText = user.id;
+            // Generate QR for logged in user
+            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy://connect/${user.id}" alt="Pairing QR">`;
+
             // Check for contractor
             if (user.contractorId) {
                 document.getElementById('not-paired-view').style.display = 'none';
@@ -1751,6 +1753,20 @@
 I've added this to my memory. What else would you like to teach me about your garden?`;
             }
             
+            if (message.startsWith('/gist add ')) {
+                const content = message.substring(10).trim();
+                if (content) {
+                    if (!gardenMemory.gists) gardenMemory.gists = [];
+                    gardenMemory.gists.push({
+                        content: content,
+                        timestamp: Date.now()
+                    });
+                    saveMemory();
+                    return `📝 **Gist Added**\n\n"${content}"\n\nI've saved this note for you.`;
+                }
+                return "Usage: /gist add [text]";
+            }
+            
             if (message.startsWith('/wrong')) {
                 const correction = message.substring(6).trim();
                 if (correction) {
@@ -1803,6 +1819,9 @@ Use /teach to give me more context for better advice!`;
 • Example: /teach I have three raised beds
 • Example: /teach My tomatoes get 6 hours of sun
 
+**/gist add** - Save a quick note
+• Example: /gist add Buy compost
+
 **/wrong** - Correct my mistake
 • Example: /wrong those are determinate tomatoes
 
@@ -1823,6 +1842,7 @@ Just ask me anything about your garden!`;
                 const teachings = gardenMemory.teachings.length;
                 const corrections = gardenMemory.corrections.length;
                 const plants = gardenMemory.plants.length;
+                const gists = (gardenMemory.gists || []).length;
                 const lastTeaching = teachings > 0 ? 
                     new Date(gardenMemory.teachings[teachings-1].timestamp).toLocaleDateString() : 
                     'Never';
@@ -1839,6 +1859,7 @@ Just ask me anything about your garden!`;
                 return `📊 **Garden Memory Stats:**
 • Teachings learned: ${teachings}
 • Corrections made: ${corrections}
+• Gists/Notes: ${gists}
 • Plants tracked: ${plants}
 • Last teaching: ${lastTeaching}
 ${plantList}
@@ -1865,6 +1886,7 @@ File saved as: ${link.download}
 Your data includes:
 • ${gardenMemory.teachings.length} teachings
 • ${gardenMemory.corrections.length} corrections  
+• ${(gardenMemory.gists || []).length} gists
 • ${gardenMemory.plants.length} plants
 • Garden layout information
 

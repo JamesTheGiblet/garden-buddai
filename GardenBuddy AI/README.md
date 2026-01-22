@@ -486,7 +486,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📣 Stay Connected
 
-- **Website**: [gardenbuddy.app](https://gardenbuddy.app)
+- **Website**: [garden-buddy-ai.netlify.app](https://garden-buddy-ai.netlify.app)
 - **GitHub**: [github.com/yourusername/gardenbuddy](https://github.com/yourusername/gardenbuddy)
 - **Twitter**: [@gardenbuddyapp](https://twitter.com/gardenbuddyapp)
 - **Newsletter**: Monthly gardening tips and updates
