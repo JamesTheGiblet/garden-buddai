@@ -6,6 +6,7 @@
     <title>GardenBuddy - Your Garden Intelligence</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <style>
         :root {
             --garden-green: #2D5016;
@@ -347,6 +348,44 @@
             background: white;
         }
 
+        .mic-button {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .mic-button:hover {
+            border-color: var(--garden-green);
+            color: var(--garden-green);
+        }
+
+        .mic-button:active {
+            transform: scale(0.95);
+        }
+
+        .mic-button.recording {
+            background: var(--sunset-tomato);
+            color: white;
+            border-color: var(--sunset-tomato);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(216, 67, 21, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(216, 67, 21, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(216, 67, 21, 0); }
+        }
+
         .send-button {
             width: 44px;
             height: 44px;
@@ -666,6 +705,37 @@
                 border: 1px solid #ccc;
             }
         }
+        /* Tutorial Modal Styles */
+        .tutorial-modal-content {
+            text-align: center;
+            max-width: 500px;
+        }
+        .tutorial-step-hidden {
+            display: none;
+        }
+        .tutorial-step-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .tutorial-step-desc {
+            color: var(--text-secondary);
+            margin: 1rem 0;
+        }
+        .tutorial-message-bubble {
+            background: var(--morning-dew);
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-align: left;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        .tutorial-location-input {
+            margin-bottom: 1rem;
+        }
+        .replay-tutorial-btn {
+            margin-top: 0.5rem;
+            background: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -737,47 +807,47 @@
                     <label class="settings-label settings-label-margin">OpenWeatherMap API Key</label>
                     <input class="request-input" id="settingApiKey" placeholder="Paste API Key here" />
                     <button class="submit-button settings-save-btn" onclick="saveSettings()">Save Settings</button>
-                    <button class="submit-button" onclick="replayTutorial()" style="margin-top:0.5rem; background:var(--text-secondary);">Replay Tutorial</button>
+                    <button class="submit-button replay-tutorial-btn" onclick="replayTutorial()">Replay Tutorial</button>
                 </div>
             </div>
         </div>
 
         <!-- Tutorial Modal -->
         <div id="tutorialModal" class="modal">
-            <div class="modal-content" style="text-align: center; max-width: 500px;">
+            <div class="modal-content tutorial-modal-content">
                 <div id="tutorialStep1" class="tutorial-step">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                    <div class="tutorial-step-icon">🌱</div>
                     <h2>Welcome to GardenBuddy</h2>
-                    <p style="color: var(--text-secondary); margin: 1rem 0;">Your personal AI-powered gardening assistant that learns and grows with your garden.</p>
-                    <button class="submit-button" onclick="nextTutorialStep(2)">Start Tour</button>
+                    <p class="tutorial-step-desc">Your personal AI-powered gardening assistant that learns and grows with your garden.</p>
+                    <button class="submit-button" type="button" onclick="nextTutorialStep(2)">Start Tour</button>
                 </div>
-                <div id="tutorialStep2" class="tutorial-step" style="display:none;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
+                <div id="tutorialStep2" class="tutorial-step tutorial-step-hidden">
+                    <div class="tutorial-step-icon">🤖</div>
                     <h2>I Learn From You</h2>
-                    <p style="color: var(--text-secondary); margin: 1rem 0;">Use <strong>/teach</strong> to tell me about your garden.</p>
-                    <div class="message-bubble" style="background: var(--morning-dew); display: inline-block; margin-bottom: 1rem; text-align: left; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                    <p class="tutorial-step-desc">Use <strong>/teach</strong> to tell me about your garden.</p>
+                    <div class="message-bubble tutorial-message-bubble">
                         /teach I have 2 raised beds<br>
                         /teach My soil is clay-heavy
                     </div>
                     <br>
-                    <button class="submit-button" onclick="nextTutorialStep(3)">Next</button>
+                    <button class="submit-button" type="button" onclick="nextTutorialStep(3)">Next</button>
                 </div>
-                <div id="tutorialStep3" class="tutorial-step" style="display:none;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🛠️</div>
+                <div id="tutorialStep3" class="tutorial-step tutorial-step-hidden">
+                    <div class="tutorial-step-icon">🛠️</div>
                     <h2>Smart Tools</h2>
-                    <p style="color: var(--text-secondary); margin: 1rem 0;">
+                    <p class="tutorial-step-desc">
                         <strong>Plants:</strong> Browse and add plants.<br>
                         <strong>Calendar:</strong> Track watering and harvest.<br>
                         <strong>Weather:</strong> Get local forecasts.
                     </p>
-                    <button class="submit-button" onclick="nextTutorialStep(4)">Next</button>
+                    <button class="submit-button" type="button" onclick="nextTutorialStep(4)">Next</button>
                 </div>
-                <div id="tutorialStep4" class="tutorial-step" style="display:none;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
+                <div id="tutorialStep4" class="tutorial-step tutorial-step-hidden">
+                    <div class="tutorial-step-icon">🌍</div>
                     <h2>Quick Setup</h2>
-                    <p style="color: var(--text-secondary); margin: 1rem 0;">Where is your garden located?</p>
-                    <input class="request-input" id="tutorialLocation" placeholder="e.g. London" style="margin-bottom: 1rem;">
-                    <button class="submit-button" onclick="finishTutorial()">All Set!</button>
+                    <p class="tutorial-step-desc">Where is your garden located?</p>
+                    <input class="request-input tutorial-location-input" id="tutorialLocation" placeholder="e.g. London">
+                    <button class="submit-button" type="button" onclick="finishTutorial()">All Set!</button>
                 </div>
             </div>
         </div>
@@ -844,6 +914,11 @@
                         rows="1"
                         onkeydown="handleKeyPress(event)"
                     ></textarea>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
+                    <button class="mic-button" onclick="triggerPhotoUpload()" title="Upload Photo">📷</button>
+                    <button class="mic-button" id="micButton" onclick="toggleVoiceInput()" title="Voice Input">
+                        🎤
+                    </button>
                     <button class="send-button" onclick="sendMessage()" id="sendButton">
                         ➤
                     </button>
@@ -877,6 +952,23 @@
                 <button class="submit-button plants-tab-back-btn" onclick="openTab('chat')">
                     Back to Chat
                 </button>
+            </div>
+        </div>
+
+        <!-- Pro Feature Modal -->
+        <div id="proModal" class="modal">
+            <div class="modal-content" style="text-align: center; max-width: 400px;">
+                <span class="close-button" onclick="toggleProModal()">&times;</span>
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                <h2>GardenBuddy Pro</h2>
+                <p><strong>AI Plant Diagnosis</strong> from photos is coming soon!</p>
+                <p style="color: var(--text-secondary); margin: 1rem 0;">
+                    We are training our vision models to detect pests and diseases automatically. Be the first to know when it launches.
+                </p>
+                <div class="request-form">
+                    <input class="request-input" id="proEmail" placeholder="Enter your email" />
+                    <button class="submit-button" onclick="joinWaitlist()">Join Waitlist</button>
+                </div>
             </div>
         </div>
 
@@ -1737,6 +1829,112 @@ Or use /why to understand my reasoning better.`;
             }
         }, { passive: false });
 
+        // Voice Input Setup
+        let recognition;
+        
+        function initVoiceInput() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = function() {
+                    const btn = document.getElementById('micButton');
+                    const input = document.getElementById('userInput');
+                    if (btn) btn.classList.add('recording');
+                    if (input) input.placeholder = "Listening...";
+                };
+
+                recognition.onend = function() {
+                    const btn = document.getElementById('micButton');
+                    const input = document.getElementById('userInput');
+                    if (btn) btn.classList.remove('recording');
+                    if (input) input.placeholder = "Tell me about your garden...";
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    const input = document.getElementById('userInput');
+                    if (input) {
+                        input.value = transcript;
+                        input.focus();
+                        // Trigger auto-resize
+                        input.style.height = 'auto';
+                        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    const btn = document.getElementById('micButton');
+                    if (btn) btn.classList.remove('recording');
+                };
+            } else {
+                const btn = document.getElementById('micButton');
+                if (btn) btn.style.display = 'none';
+            }
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) {
+                alert("Voice input is not supported in this browser.");
+                return;
+            }
+            const btn = document.getElementById('micButton');
+            if (btn.classList.contains('recording')) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        // Photo Upload Functions
+        function triggerPhotoUpload() {
+            document.getElementById('photoInput').click();
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Display user message with image
+                    const imgHtml = `<img src="${e.target.result}" style="max-width: 100%; border-radius: 8px; margin-top: 5px; border: 1px solid var(--border-color);">`;
+                    addMessage('user', `Uploaded a photo:<br>${imgHtml}`);
+                    
+                    // Assistant response simulation
+                    setTimeout(() => {
+                        addMessage('assistant', `I see you've uploaded a photo! 📸\n\n**Note:** Advanced AI visual diagnosis is a **Pro Feature** currently in development.\n\nI can't analyze this specific image yet, but I can help you diagnose issues through conversation. Try the Diagnostic Wizard!`);
+                        
+                        // Trigger modal to capture demand
+                        setTimeout(() => toggleProModal(), 1500);
+                    }, 1000);
+                };
+                
+                reader.readAsDataURL(file);
+                // Reset input so same file can be selected again if needed
+                input.value = '';
+            }
+        }
+
+        function toggleProModal() {
+            const modal = document.getElementById('proModal');
+            modal.style.display = (modal.style.display === 'flex' || modal.style.display === 'block') ? 'none' : 'flex';
+        }
+
+        function joinWaitlist() {
+            const email = document.getElementById('proEmail').value;
+            if (email) {
+                alert(`Thanks! ${email} has been added to the GardenBuddy Pro waitlist.`);
+                toggleProModal();
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
         // Initialize on load
         window.addEventListener('load', () => {
             loadMemory();
@@ -1744,6 +1942,9 @@ Or use /why to understand my reasoning better.`;
             // Initialize plant database
             initializePlantDatabase();
             loadKnowledgeBase();
+            
+            // Initialize Voice Input
+            initVoiceInput();
             
             // Check for tutorial
             initTutorial();
@@ -1788,11 +1989,15 @@ Or use /why to understand my reasoning better.`;
         window.onclick = function(event) {
             const modal = document.getElementById('profileModal');
             const settingsModal = document.getElementById('settingsModal');
+            const proModal = document.getElementById('proModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
             if (event.target === settingsModal) {
                 settingsModal.style.display = 'none';
+            }
+            if (event.target === proModal) {
+                proModal.style.display = 'none';
             }
         }
 
