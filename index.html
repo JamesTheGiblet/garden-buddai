@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GardenBuddy - Free Garden Management for You & Your Clients</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <meta name="description" content="The only garden management system with a FREE app for your clients. Manage up to 5 clients free, unlimited for £20/month. Stop losing jobs to missed appointments.">
     
     <!-- Open Graph -->
@@ -655,6 +656,7 @@
             gap: var(--space-sm);
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 2rem;
         }
         
         /* Footer */
@@ -677,6 +679,11 @@
             margin-bottom: var(--space-sm);
             font-family: var(--font-display);
         }
+
+        .footer-description {
+            opacity: 0.7;
+            line-height: 1.7;
+        }
         
         .footer-section ul {
             list-style: none;
@@ -695,6 +702,10 @@
         .footer-section a:hover {
             color: var(--lawn-green);
         }
+
+        .footer-link-highlight {
+            color: var(--lawn-green);
+        }
         
         .footer-bottom {
             max-width: 1200px;
@@ -711,6 +722,12 @@
             gap: var(--space-xs);
             max-width: 500px;
             margin: var(--space-lg) auto;
+        }
+
+        .trial-benefits {
+            margin-top: 1rem;
+            opacity: 0.85;
+            font-size: 0.95rem;
         }
         
         .email-input {
@@ -800,7 +817,7 @@
             }
             
             .hero {
-                min-height: auto;
+                min-height: 0;
                 padding: var(--space-lg) var(--space-sm);
             }
             
@@ -823,6 +840,56 @@
             .proof-stats {
                 gap: var(--space-md);
             }
+        }
+        .section-label-light {
+            color: rgba(255,255,255,0.7);
+        }
+        .section-title-light {
+            color: white;
+        }
+        .section-subtitle-light {
+            color: rgba(255,255,255,0.85);
+        }
+        /* Client App Highlight Section (was inline styles) */
+        .client-app-highlight {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+        }
+        .client-app-highlight-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        .client-app-highlight-desc {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .client-app-highlight-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .client-app-highlight-stat-main {
+            font-size: 2rem;
+            color: var(--lawn-green);
+            font-weight: bold;
+        }
+        .client-app-highlight-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .client-app-highlight-note {
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
         }
     </style>
 </head>
@@ -936,7 +1003,7 @@
                         <li>100% free forever</li>
                     </ul>
                     
-                    <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(45, 80, 22, 0.05); border-radius: 8px; font-size: 0.95rem;">
+                    <p class="solution-secret">
                         <strong>💡 The Secret:</strong> When they use GardenBuddy, they see YOUR business name. 
                         It's free marketing that builds trust and keeps you top-of-mind.
                     </p>
@@ -965,9 +1032,9 @@
     <section class="pricing-section" id="pricing">
         <div class="container">
             <div class="section-header">
-                <div class="section-label" style="color: rgba(255,255,255,0.7)">Simple Pricing</div>
-                <h2 class="section-title" style="color: white">Try Free for 3 Months. Then Pay As You Grow.</h2>
-                <p class="section-subtitle" style="color: rgba(255,255,255,0.85)">
+                <div class="section-label section-label-light">Simple Pricing</div>
+                <h2 class="section-title section-title-light">Try Free for 3 Months. Then Pay As You Grow.</h2>
+                <p class="section-subtitle section-subtitle-light">
                     Full access during trial. No credit card required. Cancel anytime.
                 </p>
             </div>
@@ -992,7 +1059,7 @@
                     </ul>
                     
                     <a href="#signup" class="pricing-cta">Start 3-Month Trial</a>
-                    <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">
+                    <p class="pricing-note">
                         No credit card required
                     </p>
                 </div>
@@ -1001,29 +1068,29 @@
                     <h3>After Trial</h3>
                     <p class="pricing-description">Choose your tier based on client count</p>
                     
-                    <div style="margin: 1.5rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <div class="pricing-tiers">
+                        <div class="pricing-tier-row">
                             <div>
                                 <strong>Standard</strong>
-                                <div style="font-size: 0.85rem; opacity: 0.8;">5-20 clients</div>
+                                <div class="pricing-tier-desc">5-20 clients</div>
                             </div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--lawn-green);">£20<span style="font-size: 0.9rem; font-weight: normal;">/mo</span></div>
+                            <div class="pricing-tier-price">£20<span class="pricing-tier-price-period">/mo</span></div>
                         </div>
                         
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <div class="pricing-tier-row">
                             <div>
                                 <strong>Professional</strong>
-                                <div style="font-size: 0.85rem; opacity: 0.8;">21-50 clients</div>
+                                <div class="pricing-tier-desc">21-50 clients</div>
                             </div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--lawn-green);">£35<span style="font-size: 0.9rem; font-weight: normal;">/mo</span></div>
+                            <div class="pricing-tier-price">£35<span class="pricing-tier-price-period">/mo</span></div>
                         </div>
                         
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="pricing-tier-row">
                             <div>
                                 <strong>Enterprise</strong>
-                                <div style="font-size: 0.85rem; opacity: 0.8;">Unlimited clients</div>
+                                <div class="pricing-tier-desc">Unlimited clients</div>
                             </div>
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--lawn-green);">£50<span style="font-size: 0.9rem; font-weight: normal;">/mo</span></div>
+                            <div class="pricing-tier-price">£50<span class="pricing-tier-price-period">/mo</span></div>
                         </div>
                     </div>
                     
@@ -1041,29 +1108,29 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 16px;">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: white;">Your Clients Get GardenBuddy FREE Forever</h3>
-                <p style="opacity: 0.9; margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <div class="client-app-highlight">
+                <h3 class="client-app-highlight-title">Your Clients Get GardenBuddy FREE Forever</h3>
+                <p class="client-app-highlight-desc">
                     The client app is 100% free with no limits. It's a marketing tool for your business - 
                     they see your name every time they use it.
                 </p>
-                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                <div class="client-app-highlight-stats">
                     <div>
-                        <div style="font-size: 2rem; color: var(--lawn-green); font-weight: bold;">£0</div>
-                        <div style="font-size: 0.9rem; opacity: 0.8;">Client cost (ever)</div>
+                        <div class="client-app-highlight-stat-main">£0</div>
+                        <div class="client-app-highlight-stat-label">Client cost (ever)</div>
                     </div>
                     <div>
-                        <div style="font-size: 2rem; color: var(--lawn-green); font-weight: bold;">∞</div>
-                        <div style="font-size: 0.9rem; opacity: 0.8;">Client features</div>
+                        <div class="client-app-highlight-stat-main">∞</div>
+                        <div class="client-app-highlight-stat-label">Client features</div>
                     </div>
                     <div>
-                        <div style="font-size: 2rem; color: var(--lawn-green); font-weight: bold;">100%</div>
-                        <div style="font-size: 0.9rem; opacity: 0.8;">Your branding</div>
+                        <div class="client-app-highlight-stat-main">100%</div>
+                        <div class="client-app-highlight-stat-label">Your branding</div>
                     </div>
                 </div>
             </div>
             
-            <p style="text-align: center; margin-top: 2rem; opacity: 0.8; font-size: 0.95rem;">
+            <p class="client-app-highlight-note">
                 💳 Cancel anytime. No contracts. No setup fees. Upgrade or downgrade as your business grows.
             </p>
         </div>
@@ -1236,13 +1303,13 @@
                 <button type="submit" class="email-submit">Start Free Trial</button>
             </form>
             
-            <p style="margin-top: 1rem; opacity: 0.85; font-size: 0.95rem;">
+            <p class="trial-benefits">
                 ✓ Full access for 3 months &nbsp;&nbsp; ✓ Up to 5 clients &nbsp;&nbsp; ✓ No credit card required
             </p>
             
-            <div class="cta-buttons" style="margin-top: 2rem;">
+            <div class="cta-buttons">
                 <a href="GardenBuddy AI/index.html" class="cta-secondary">Try Client App Demo</a>
-                <a href="gardenmanagerpro.html" class="cta-secondary">Try Contractor Demo</a>
+                <a href="GardenManager AI/index.html" class="cta-secondary">Try Contractor Demo</a>
             </div>
         </div>
     </section>
@@ -1252,7 +1319,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>GardenBuddy</h4>
-                <p style="opacity: 0.7; line-height: 1.7;">
+                <p class="footer-description">
                     Professional garden management for contractors and clients. 
                     Part of the BuddAI v2.0 ecosystem.
                 </p>
@@ -1289,7 +1356,7 @@
         </div>
         
         <div class="footer-bottom">
-            <p>© 2025 GardenBuddy by <a href="https://giblets.uk" style="color: var(--lawn-green);">Giblets Creations</a>. 
+            <p>© 2025 GardenBuddy by <a href="https://giblets.uk" class="footer-link-highlight">Giblets Creations</a>. 
             Open source under MIT license.</p>
         </div>
     </footer>

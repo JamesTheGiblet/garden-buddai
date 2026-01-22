@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GardenManager Pro</title>
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <style>
         :root {
@@ -572,6 +572,113 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+        /* Custom classes for moved inline styles */
+        .error-message {
+            color: var(--danger);
+            display: none;
+            margin-bottom: 1rem;
+        }
+        .superuser-login-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .superuser-login-note {
+            font-size: 0.75rem;
+            color: #ff9800;
+            margin-top: 0.5rem;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .register-link-a {
+            color: var(--primary);
+        }
+        .app-content-hidden {
+            display: none;
+        }
+        .superuser-badge-hidden {
+            display: none;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin-left: auto;
+            cursor: pointer;
+        }
+        .superuser-panel-hidden {
+            display: none;
+        }
+        .quick-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .quick-stats-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--background);
+            border-radius: 8px;
+        }
+        .quick-stats-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .quick-stats-value.success {
+            color: var(--success);
+        }
+        .quick-stats-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .message-badge {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 25%;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scan-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 10px;
+            display: none;
+        }
+        .qr-demo-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e3f2fd;
+            border-radius: 8px;
+        }
+        .qr-demo-text {
+            font-size: 0.9rem;
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+        .qr-demo-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -579,49 +686,49 @@
     <div id="loginScreen" class="login-container">
         <div class="login-card">
             <h1 class="login-title">GardenManager Pro</h1>
-            <div id="loginError" class="error-message" style="color: var(--danger); display: none; margin-bottom: 1rem;"></div>
+            <div id="loginError" class="error-message"></div>
             <div class="form-group">
                 <input type="email" id="loginEmail" class="form-input" placeholder="Email" value="demo@gardenmanager.com">
             </div>
             <div class="form-group">
                 <input type="password" id="loginPassword" class="form-input" placeholder="Password" value="demo123">
             </div>
-            <button onclick="login()" class="login-button">Login</button>
+            <button type="button" onclick="login()" class="login-button">Login</button>
             
             <div class="superuser-login">
-                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <p class="superuser-login-text">
                     Need full access?
                 </p>
-                <button onclick="superuserLogin()" class="superuser-button">
+                <button type="button" onclick="superuserLogin()" class="superuser-button">
                     🔑 Superuser Login (gardenbuddai)
                 </button>
-                <p style="font-size: 0.75rem; color: #ff9800; margin-top: 0.5rem;">
+                <p class="superuser-login-note">
                     Access all features with demo data
                 </p>
             </div>
             
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                Don't have an account? <a href="#" onclick="showRegister()" style="color: var(--primary);">Sign up</a>
+            <p class="register-link">
+                Don't have an account? <a href="#" onclick="showRegister()" class="register-link-a">Sign up</a>
             </p>
         </div>
     </div>
 
     <!-- Main App (Initially hidden) -->
-    <div id="appContent" style="display: none;">
+    <div id="appContent" class="app-content-hidden">
         <!-- Superuser Badge -->
-        <div id="superuserBadge" class="superuser-badge" style="display: none;">
+        <div id="superuserBadge" class="superuser-badge superuser-badge-hidden">
             🔓 SUPERUSER
         </div>
 
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+                <button type="button" class="menu-toggle" onclick="toggleMenu()">☰</button>
                 <div class="business-info">
                     <h1 id="businessName">Loading...</h1>
                     <div class="subtitle" id="businessSubtitle">Loading...</div>
                 </div>
-                <button onclick="logout()" style="background: none; border: none; color: white; font-size: 1.2rem; margin-left: auto;">🚪</button>
+                <button type="button" onclick="logout()" class="logout-btn">🚪</button>
             </div>
             
             <div class="stats-bar">
@@ -643,7 +750,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Superuser Tools Panel (Shows only for superuser) -->
-            <div id="superuserPanel" class="superuser-panel" style="display: none;">
+            <div id="superuserPanel" class="superuser-panel superuser-panel-hidden">
                 <h3>⚡ Superuser Tools</h3>
                 <div class="superuser-tools">
                     <div class="super-tool" onclick="addDemoClient()">➕ Add Demo Client</div>
@@ -657,19 +764,19 @@
 
             <!-- Quick Actions -->
             <div class="quick-actions">
-                <button class="action-button scan" onclick="openQRScanner()">
+                <button type="button" class="action-button scan" onclick="openQRScanner()">
                     <div class="icon">📱</div>
                     <div class="label">Scan Client</div>
                 </button>
-                <button class="action-button" onclick="createJob()">
+                <button type="button" class="action-button" onclick="createJob()">
                     <div class="icon">🛠️</div>
                     <div class="label">New Job</div>
                 </button>
-                <button class="action-button" onclick="messageAll()">
+                <button type="button" class="action-button" onclick="messageAll()">
                     <div class="icon">📢</div>
                     <div class="label">Message All</div>
                 </button>
-                <button class="action-button" onclick="viewCalendar()">
+                <button type="button" class="action-button" onclick="viewCalendar()">
                     <div class="icon">📅</div>
                     <div class="label">Calendar</div>
                 </button>
@@ -704,14 +811,14 @@
                 <div class="card-header">
                     <h2 class="card-title">📊 Quick Stats</h2>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                    <div style="text-align: center; padding: 0.75rem; background: var(--background); border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="statTotalRevenue">£0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Total Revenue</div>
+                <div class="quick-stats-grid">
+                    <div class="quick-stats-item">
+                        <div class="quick-stats-value" id="statTotalRevenue">£0</div>
+                        <div class="quick-stats-label">Total Revenue</div>
                     </div>
-                    <div style="text-align: center; padding: 0.75rem; background: var(--background); border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);" id="statCompletedJobs">0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Completed Jobs</div>
+                    <div class="quick-stats-item">
+                        <div class="quick-stats-value success" id="statCompletedJobs">0</div>
+                        <div class="quick-stats-label">Completed Jobs</div>
                     </div>
                 </div>
             </div>
@@ -734,7 +841,7 @@
             <a href="#messages" class="nav-item" onclick="showMessages()">
                 <div class="nav-icon">💬</div>
                 <div class="nav-label">Messages</div>
-                <span id="messageBadge" style="display: none; position: absolute; top: 5px; right: 25%; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">3</span>
+                <span id="messageBadge" class="message-badge">3</span>
             </a>
             <a href="#profile" class="nav-item" onclick="showProfile()">
                 <div class="nav-icon">👤</div>
@@ -748,19 +855,19 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Scan Client QR Code</h2>
-                <button class="close-modal" onclick="closeQRScanner()">×</button>
+                <button type="button" class="close-modal" onclick="closeQRScanner()">×</button>
             </div>
             <div class="modal-body">
                 <div id="qr-scanner"></div>
                 <p>Align QR code within frame to connect</p>
-                <div id="scanResult" style="margin-top: 1rem; padding: 1rem; background: var(--background); border-radius: 10px; display: none;"></div>
+                <div id="scanResult" class="scan-result"></div>
                 
                 <!-- For superuser demo -->
-                <div style="margin-top: 1rem; padding: 1rem; background: #e3f2fd; border-radius: 8px;">
-                    <p style="font-size: 0.9rem; color: #1976d2; margin-bottom: 0.5rem;">
+                <div class="qr-demo-box">
+                    <p class="qr-demo-text">
                         <strong>Demo:</strong> Click to simulate scanning
                     </p>
-                    <button onclick="simulateQRScan()" style="width: 100%; padding: 0.75rem; background: #2196f3; color: white; border: none; border-radius: 8px;">
+                    <button type="button" onclick="simulateQRScan()" class="qr-demo-btn">
                         📱 Simulate QR Scan
                     </button>
                 </div>

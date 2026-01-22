@@ -18,8 +18,8 @@
             
             --bg-primary: #FAFDF7;
             --bg-chat: #FFFFFF;
-            --text-primary: #1A1A1A;
-            --text-secondary: #5A5A5A;
+            --text-primary: #000000;
+            --text-secondary: #222222;
             --border-color: #D4E7D0;
         }
 
@@ -262,7 +262,7 @@
 
         .message.assistant .message-bubble {
             background: white;
-            color: var(--text-primary);
+            color: #000000;
             border: 1px solid var(--border-color);
             border-bottom-left-radius: 4px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -736,10 +736,141 @@
             margin-top: 0.5rem;
             background: var(--text-secondary);
         }
+
+        /* Info Tooltip */
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--text-secondary);
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            margin-left: 8px;
+            cursor: help;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .info-tooltip {
+            visibility: hidden;
+            width: 240px;
+            background-color: var(--text-primary);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            line-height: 1.4;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .info-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--text-primary) transparent transparent transparent;
+        }
+
+        .info-icon:hover .info-tooltip,
+        .info-icon:active .info-tooltip,
+        .info-icon:focus .info-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Auth Screen */
+        #auth-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-primary);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            background: var(--garden-green);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .qr-display {
+            background: white;
+            padding: 1rem;
+            border: 2px dashed var(--border-color);
+            margin: 1rem auto;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Auth Screen -->
+        <div id="auth-screen">
+            <div class="auth-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                <h2>Welcome Back</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Sign in to sync your garden</p>
+                
+                <input type="email" id="authEmail" class="auth-input" placeholder="Email">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Password">
+                
+                <button class="auth-btn" onclick="handleLogin()">Sign In</button>
+                <button class="auth-btn" onclick="handleRegister()" style="background: transparent; color: var(--garden-green); border: 1px solid var(--garden-green); margin-top: 0.5rem;">Create Account</button>
+                
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;" onclick="skipAuth()">Continue as Guest</p>
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="header-content">
@@ -793,6 +924,7 @@
                         <div class="stat-label">Plants</div>
                     </div>
                 </div>
+                <button class="submit-button" onclick="handleLogout()" style="background-color: var(--sunset-tomato); margin-top: 1rem; width: 100%;">Logout</button>
             </div>
         </div>
 
@@ -804,10 +936,18 @@
                 <div class="request-form">
                     <label class="settings-label">Location (City)</label>
                     <input class="request-input" id="settingLocation" placeholder="e.g. London" />
-                    <label class="settings-label settings-label-margin">OpenWeatherMap API Key</label>
+                    <label class="settings-label settings-label-margin">
+                        OpenWeatherMap API Key
+                        <span class="info-icon" tabindex="0">?
+                            <span class="info-tooltip">
+                                This data is saved locally in your browser's storage. It is never sent to our servers. If you clear your browser history/data, this key will be lost.
+                            </span>
+                        </span>
+                    </label>
                     <input class="request-input" id="settingApiKey" placeholder="Paste API Key here" />
                     <button class="submit-button settings-save-btn" onclick="saveSettings()">Save Settings</button>
                     <button class="submit-button replay-tutorial-btn" onclick="replayTutorial()">Replay Tutorial</button>
+                    <button class="submit-button" onclick="clearAllData()" style="background-color: var(--sunset-tomato); margin-top: 0.5rem;">Clear All Data</button>
                 </div>
             </div>
         </div>
@@ -929,10 +1069,26 @@
         <!-- Contractor Request Tab Content -->
         <div id="contractor" class="tab-content">
             <div class="request-form">
-                <h3>Send a Request to a Contractor</h3>
-                <input class="request-input" id="contractorName" placeholder="Contractor Name (optional)" />
-                <textarea class="request-input" id="requestMessage" placeholder="Describe your request..."></textarea>
-                <button class="submit-button" onclick="sendContractorRequest()">Send Request</button>
+                <h3>My Gardener</h3>
+                
+                <div id="not-paired-view">
+                    <div class="stat-card" style="margin-top: 1rem; text-align: center;">
+                        <h3>Pair with a Professional</h3>
+                        <p style="color: var(--text-secondary); margin: 0.5rem 0;">Show this code to your gardener to connect.</p>
+                        <div class="qr-display" id="pairing-qr">QR Code</div>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">ID: <span id="clientIdDisplay">...</span></p>
+                    </div>
+                </div>
+
+                <div id="paired-view" style="display: none;">
+                    <div class="stat-card" style="margin-top: 1rem;">
+                        <h3 id="contractorDisplayName">GreenThumb Services</h3>
+                        <p style="color: var(--garden-green);">● Connected</p>
+                        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1rem 0;">
+                        <textarea class="request-input" id="requestMessage" placeholder="Describe your request..."></textarea>
+                        <button class="submit-button" onclick="sendContractorRequest()">Request Visit</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -989,6 +1145,10 @@
     </div>
 
     <script>
+        // --- API Configuration ---
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let authToken = localStorage.getItem('gb_token');
+
         // Extended garden memory
         let gardenMemory = {
             teachings: [],
@@ -1019,20 +1179,7 @@
         let knowledgeBase = null;
 
         // Plant database
-        const plantDatabase = {
-            'tomato': { emoji: '🍅', type: 'vegetable', sun: 'Full sun (6-8 hours)', water: '1-2 inches per week', daysToHarvest: 60 },
-            'basil': { emoji: '🌿', type: 'herb', sun: 'Partial to full sun', water: 'Keep soil moist', daysToHarvest: 30 },
-            'lettuce': { emoji: '🥬', type: 'vegetable', sun: 'Partial sun', water: 'Keep soil moist', daysToHarvest: 45 },
-            'carrot': { emoji: '🥕', type: 'vegetable', sun: 'Full sun', water: '1 inch per week', daysToHarvest: 70 },
-            'pepper': { emoji: '🫑', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 65 },
-            'cucumber': { emoji: '🥒', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 55 },
-            'zucchini': { emoji: '🥒', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 50 },
-            'strawberry': { emoji: '🍓', type: 'fruit', sun: 'Full sun', water: '1 inch per week', daysToHarvest: 90 },
-            'rosemary': { emoji: '🌿', type: 'herb', sun: 'Full sun', water: 'Let soil dry between', daysToHarvest: 90 },
-            'mint': { emoji: '🌿', type: 'herb', sun: 'Partial sun', water: 'Keep soil moist', daysToHarvest: 30 },
-            'sunflower': { emoji: '🌻', type: 'flower', sun: 'Full sun', water: 'Moderate', daysToHarvest: 80 },
-            'lavender': { emoji: '🪻', type: 'herb', sun: 'Full sun', water: 'Drought tolerant', daysToHarvest: 120 }
-        };
+        let plantDatabase = {};
 
         // Load from localStorage
         function loadMemory() {
@@ -1076,7 +1223,7 @@
         // Toggle Settings Modal
         function toggleSettingsModal() {
             const modal = document.getElementById('settingsModal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'flex';
+            modal.style.display = (modal.style.display === 'flex' || modal.style.display === 'block') ? 'none' : 'flex';
             
             if (modal.style.display === 'flex') {
                 document.getElementById('settingLocation').value = gardenMemory.settings.location || '';
@@ -1095,6 +1242,14 @@
             
             toggleSettingsModal();
             addMessage('assistant', `Settings updated! Location set to ${loc}.`);
+        }
+
+        // Clear All Data
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all data? This will wipe your garden memory and settings.")) {
+                localStorage.clear();
+                location.reload();
+            }
         }
 
         // Tutorial Functions
@@ -1187,7 +1342,7 @@
         // Toggle Profile Modal
         function toggleProfileModal() {
             const modal = document.getElementById('profileModal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'flex';
+            modal.style.display = (modal.style.display === 'flex' || modal.style.display === 'block') ? 'none' : 'flex';
             
             // Update time in modal
             if (modal.style.display === 'flex') {
@@ -1211,7 +1366,34 @@
         }
 
         // Initialize plant database display
-        function initializePlantDatabase() {
+        async function initializePlantDatabase() {
+            if (Object.keys(plantDatabase).length === 0) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/plants`);
+                    if (res.ok) {
+                        plantDatabase = await res.json();
+                    } else {
+                        throw new Error('API response not ok');
+                    }
+                } catch (e) {
+                    console.error("Could not fetch plants from API", e);
+                    // Fallback to local data if API fails
+                    plantDatabase = {
+                        'tomato': { emoji: '🍅', type: 'vegetable', sun: 'Full sun (6-8 hours)', water: '1-2 inches per week', daysToHarvest: 60 },
+                        'basil': { emoji: '🌿', type: 'herb', sun: 'Partial to full sun', water: 'Keep soil moist', daysToHarvest: 30 },
+                        'lettuce': { emoji: '🥬', type: 'vegetable', sun: 'Partial sun', water: 'Keep soil moist', daysToHarvest: 45 },
+                        'carrot': { emoji: '🥕', type: 'vegetable', sun: 'Full sun', water: '1 inch per week', daysToHarvest: 70 },
+                        'pepper': { emoji: '🫑', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 65 },
+                        'cucumber': { emoji: '🥒', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 55 },
+                        'zucchini': { emoji: '🥒', type: 'vegetable', sun: 'Full sun', water: '1-2 inches per week', daysToHarvest: 50 },
+                        'strawberry': { emoji: '🍓', type: 'fruit', sun: 'Full sun', water: '1 inch per week', daysToHarvest: 90 },
+                        'rosemary': { emoji: '🌿', type: 'herb', sun: 'Full sun', water: 'Let soil dry between', daysToHarvest: 90 },
+                        'mint': { emoji: '🌿', type: 'herb', sun: 'Partial sun', water: 'Keep soil moist', daysToHarvest: 30 },
+                        'sunflower': { emoji: '🌻', type: 'flower', sun: 'Full sun', water: 'Moderate', daysToHarvest: 80 },
+                        'lavender': { emoji: '🪻', type: 'herb', sun: 'Full sun', water: 'Drought tolerant', daysToHarvest: 120 }
+                    };
+                }
+            }
             const searchInput = document.getElementById('plantSearch');
             if (searchInput) searchInput.value = '';
             filterPlants();
@@ -1305,33 +1487,89 @@
             document.getElementById('plantsCount').textContent = gardenMemory.plants.length;
         }
 
-        // Send Contractor Request (Simulation)
-        function sendContractorRequest() {
-            const name = document.getElementById('contractorName').value;
-            const message = document.getElementById('requestMessage').value;
-            if (message) {
-                alert(`Request sent to ${name || 'contractor'}: "${message}"\n\nThis is a simulation. In a real app, this would send via email or API.`);
-                
-                // Log the request
-                gardenMemory.contractorRequests = gardenMemory.contractorRequests || [];
-                gardenMemory.contractorRequests.push({
-                    to: name,
-                    message: message,
-                    timestamp: Date.now()
+        // --- Auth & API Logic ---
+        async function handleLogin() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
                 });
-                saveMemory();
                 
-                // Clear form
-                document.getElementById('contractorName').value = '';
-                document.getElementById('requestMessage').value = '';
-                
-                // Switch back to chat
+                const data = await response.json();
+                if (data.token) {
+                    authToken = data.token;
+                    localStorage.setItem('gb_token', authToken);
+                    document.getElementById('auth-screen').style.display = 'none';
+                    initUserData(data.user);
+                } else {
+                    alert('Login failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (e) {
+                console.error('API Error', e);
+                // Fallback for demo
+                alert('Demo Mode: Logging in locally');
+                skipAuth();
+            }
+        }
+
+        function handleRegister() {
+            alert("Registration would open here.");
+        }
+
+        function handleLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem('gb_token');
+                authToken = null;
+                toggleProfileModal();
+                document.getElementById('auth-screen').style.display = 'flex';
+            }
+        }
+
+        function skipAuth() {
+            document.getElementById('auth-screen').style.display = 'none';
+            // Generate random ID for guest
+            const guestId = 'guest_' + Math.floor(Math.random() * 10000);
+            document.getElementById('clientIdDisplay').innerText = guestId;
+            // Generate QR (Mock)
+            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy://connect/${guestId}" alt="Pairing QR">`;
+        }
+
+        function initUserData(user) {
+            document.getElementById('clientIdDisplay').innerText = user.id;
+            // Check for contractor
+            if (user.contractorId) {
+                document.getElementById('not-paired-view').style.display = 'none';
+                document.getElementById('paired-view').style.display = 'block';
+                document.getElementById('contractorDisplayName').innerText = user.contractorName || 'Your Gardener';
+            }
+        }
+
+        async function sendContractorRequest() {
+            if (!authToken) return alert("Please sign in to contact your gardener.");
+            const message = document.getElementById('requestMessage').value;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/requests`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type: 'visit_request', note: message })
+                });
+                if (res.ok) {
+                    alert("Request sent to your gardener!");
+                    document.getElementById('requestMessage').value = '';
+                    openTab('chat');
+                    addMessage('assistant', `✓ Contractor request sent. They should respond shortly.`);
+                }
+            } catch (e) {
+                alert("Request sent! (Demo)");
                 openTab('chat');
-                
-                // Add notification
-                addMessage('assistant', `✓ Contractor request logged. They should respond within 1-2 business days.`);
-            } else {
-                alert('Please enter a message.');
             }
         }
 
@@ -1948,6 +2186,13 @@ Or use /why to understand my reasoning better.`;
             
             // Check for tutorial
             initTutorial();
+            
+            // Check Auth
+            if (authToken) {
+                document.getElementById('auth-screen').style.display = 'none';
+                // In real app, fetch user profile here
+                skipAuth(); // Just to init UI for demo
+            }
             
             // Focus input on load
             setTimeout(() => {
