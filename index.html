@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GardenBuddy - Your Garden Intelligence</title>
+    <style>
+        :root {
+            --garden-green: #2D5016;
+            --soil-brown: #3E2723;
+            --morning-dew: #E8F5E9;
+            --seedling-sprout: #7CB342;
+            --sunset-tomato: #D84315;
+            --sky-blue: #81C784;
+            --calendar-blue: #2196F3;
+            --weather-yellow: #FF9800;
+            
+            --bg-primary: #FAFDF7;
+            --bg-chat: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --border-color: #D4E7D0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.4;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--garden-green) 0%, #3d6b1f 100%);
+            padding: 1rem 1rem;
+            box-shadow: 0 2px 12px rgba(45, 80, 22, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--seedling-sprout);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 2px;
+        }
+
+        .weather-badge {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .profile-button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* User Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .close-button {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: var(--morning-dew);
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab-button.active {
+            color: var(--garden-green);
+            border-bottom: 2px solid var(--garden-green);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--seedling-sprout);
+        }
+
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--garden-green) 0%, #3d6b1f 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant .message-bubble {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Command Badges */
+        .command-badge {
+            display: inline-block;
+            background: var(--seedling-sprout);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .command-hints {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .command-hints::-webkit-scrollbar {
+            display: none;
+        }
+
+        .command-hint {
+            background: var(--morning-dew);
+            color: var(--garden-green);
+            padding: 0.5rem 0.875rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .command-hint:active {
+            background: var(--seedling-sprout);
+            color: white;
+            transform: scale(0.98);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            min-height: 44px;
+            line-height: 1.4;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--seedling-sprout);
+            background: white;
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--garden-green) 0%, #3d6b1f 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .welcome-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--garden-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-size: 0.95rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* Weather Widget */
+        .weather-widget {
+            background: linear-gradient(135deg, var(--sky-blue) 0%, #4CAF50 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+        }
+
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .weather-detail {
+            text-align: center;
+        }
+
+        .weather-label {
+            opacity: 0.9;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Calendar */
+        .calendar {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--garden-green);
+        }
+
+        .calendar-title {
+            font-weight: 600;
+            color: var(--garden-green);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-day:hover {
+            background: var(--morning-dew);
+        }
+
+        .calendar-day.today {
+            background: var(--seedling-sprout);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--sunset-tomato);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+        }
+
+        .calendar-events {
+            margin-top: 1rem;
+        }
+
+        .calendar-event {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--morning-dew);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--seedling-sprout);
+        }
+
+        .event-emoji {
+            font-size: 1.2rem;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: var(--garden-green);
+            margin-bottom: 0.25rem;
+        }
+
+        .event-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Plant Tracking */
+        .plant-tracker {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .plant-tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .plant-tracker-title {
+            font-weight: 600;
+            color: var(--garden-green);
+        }
+
+        .plant-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .plant-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--morning-dew);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .plant-item:hover {
+            background: #e3f2e1;
+        }
+
+        .plant-emoji {
+            font-size: 1.5rem;
+        }
+
+        .plant-info {
+            flex: 1;
+        }
+
+        .plant-name {
+            font-weight: 600;
+            color: var(--garden-green);
+            margin-bottom: 0.25rem;
+        }
+
+        .plant-status {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .plant-progress {
+            font-size: 0.8rem;
+            color: var(--seedling-sprout);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--seedling-sprout);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .quick-action {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-action:hover {
+            background: var(--morning-dew);
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-text {
+            font-weight: 600;
+            color: var(--garden-green);
+            font-size: 0.9rem;
+        }
+
+        /* Lawn Care */
+        .lawn-care {
+            background: linear-gradient(135deg, #66BB6A 0%, #388E3C 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .lawn-care-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lawn-care-icon {
+            font-size: 1.5rem;
+        }
+
+        .lawn-care-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .lawn-care-status {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lawn-care-suggestion {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        /* Loading Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem 0;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--seedling-sprout);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.875rem 1rem;
+            }
+            
+            .avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+            
+            .header-title {
+                font-size: 1.2rem;
+            }
+            
+            .weather-badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .chat-container {
+                padding: 0.875rem;
+            }
+            
+            .message-bubble {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.9rem;
+            }
+            
+            .input-area {
+                padding: 0.875rem;
+            }
+            
+            .input-field {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.9rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-day {
+                padding: 0.25rem;
+                min-height: 35px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #0d1a08;
+                --bg-chat: #15220f;
+                --text-primary: #e8f5e9;
+                --text-secondary: #a5d6a7;
+                --border-color: #2d5016;
+                --morning-dew: #1a2910;
+            }
+            
+            .message.assistant .message-bubble {
+                background: var(--bg-chat);
+            }
+            
+            .input-area {
+                background: var(--bg-chat);
+            }
+            
+            .input-field {
+                background: var(--bg-primary);
+                color: var(--text-primary);
+            }
+            
+            .command-hint {
+                background: var(--morning-dew);
+                border-color: var(--border-color);
+            }
+            
+            .modal-content, .calendar, .plant-tracker, .quick-action {
+                background: var(--bg-chat);
+            }
+            
+            .weather-widget, .lawn-care {
+                opacity: 0.95;
+            }
+            
+            .progress-bar {
+                background: #2d5016;
+            }
+        }
+
+        /* Safe area insets for modern phones */
+        @supports (padding: max(0px)) {
+            .header {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+                padding-top: max(1rem, env(safe-area-inset-top));
+            }
+            
+            .chat-container {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+            
+            .input-area {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Weather -->
+        <header class="header">
+            <div class="header-content">
+                <div class="avatar">🌱</div>
+                <div class="header-text">
+                    <div class="header-title">GardenBuddy</div>
+                    <div class="header-subtitle">Your garden intelligence</div>
+                </div>
+                <div class="weather-badge" id="currentWeather" onclick="openTab('weather')">
+                    <span id="weatherTemp">--°</span>
+                    <span id="weatherIcon">⛅</span>
+                </div>
+                <button class="profile-button" onclick="toggleProfileModal()">👤</button>
+            </div>
+        </header>
+
+        <!-- User Details Modal -->
+        <div id="profileModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="toggleProfileModal()">&times;</span>
+                <h2>User Details</h2>
+                <p><strong>Display Name:</strong> <span id="userName">The Gardener</span></p>
+                <p><strong>Location:</strong> <span id="userLocation">London, GB</span></p>
+                <p><strong>Last Updated:</strong> <span id="lastUpdateTime"></span></p>
+                
+                <div class="weather-widget" style="margin: 1rem 0;">
+                    <div class="weather-header">
+                        <div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Current Weather</div>
+                            <div id="profileWeather" style="font-size: 1.1rem; font-weight: 600;">Loading...</div>
+                        </div>
+                        <div id="profileWeatherIcon" style="font-size: 2rem;">⛅</div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0;">
+                    <div style="text-align: center; background: var(--morning-dew); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="teachingsCount">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Teachings</div>
+                    </div>
+                    <div style="text-align: center; background: var(--morning-dew); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="plantsCount">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Plants</div>
+                    </div>
+                </div>
+                
+                <button onclick="exportData()" style="width: 100%; padding: 0.75rem; background: var(--garden-green); color: white; border: none; border-radius: 8px; margin-top: 1rem; cursor: pointer;">
+                    💾 Export Garden Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('chat')">Chat</button>
+            <button class="tab-button" onclick="openTab('calendar')">Calendar</button>
+            <button class="tab-button" onclick="openTab('plants')">Plants</button>
+            <button class="tab-button" onclick="openTab('weather')">Weather</button>
+            <button class="tab-button" onclick="openTab('lawn')">Lawn Care</button>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat" class="tab-content active">
+            <div class="chat-container" id="chatContainer">
+                <div class="welcome-message">
+                    <div class="welcome-icon">🌱</div>
+                    <h2 class="welcome-title">Welcome to GardenBuddy</h2>
+                    <p class="welcome-text">
+                        I'll learn about your specific garden and help you tend it successfully. 
+                        Start by teaching me about your garden layout!
+                    </p>
+                    
+                    <!-- Weather Widget -->
+                    <div class="weather-widget" id="chatWeather">
+                        <div class="weather-header">
+                            <div class="weather-icon">⛅</div>
+                            <div class="weather-temp">--°C</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <div class="weather-label">Humidity</div>
+                                <div>--%</div>
+                            </div>
+                            <div class="weather-detail">
+                                <div class="weather-label">Wind</div>
+                                <div>-- km/h</div>
+                            </div>
+                            <div class="weather-detail">
+                                <div class="weather-label">Rain</div>
+                                <div>--%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="insertCommand('/teach I have a raised bed')">
+                            <div class="action-icon">🛏️</div>
+                            <div class="action-text">Teach Layout</div>
+                        </div>
+                        <div class="quick-action" onclick="openTab('plants')">
+                            <div class="action-icon">🌿</div>
+                            <div class="action-text">Track Plants</div>
+                        </div>
+                        <div class="quick-action" onclick="openTab('calendar')">
+                            <div class="action-icon">📅</div>
+                            <div class="action-text">View Calendar</div>
+                        </div>
+                        <div class="quick-action" onclick="sendMessage('/stats')">
+                            <div class="action-icon">📊</div>
+                            <div class="action-text">View Stats</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="command-hints">
+                    <div class="command-hint" onclick="insertCommand('/teach ')">💡 /teach</div>
+                    <div class="command-hint" onclick="insertCommand('/plant ')">🌿 /plant</div>
+                    <div class="command-hint" onclick="insertCommand('/water ')">💧 /water</div>
+                    <div class="command-hint" onclick="sendMessage('/weather')">☀️ /weather</div>
+                    <div class="command-hint" onclick="sendMessage('/calendar')">📅 /calendar</div>
+                </div>
+                <div class="input-wrapper">
+                    <textarea 
+                        class="input-field" 
+                        id="userInput" 
+                        placeholder="Tell me about your garden..."
+                        rows="1"
+                        onkeydown="handleKeyPress(event)"
+                    ></textarea>
+                    <button class="send-button" onclick="sendMessage()" id="sendButton">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div id="calendar" class="tab-content">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button class="calendar-nav" onclick="changeMonth(-1)">←</button>
+                    <div class="calendar-title" id="calendarTitle">Month Year</div>
+                    <button class="calendar-nav" onclick="changeMonth(1)">→</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated here -->
+                </div>
+                <div class="calendar-events" id="calendarEvents">
+                    <!-- Events will be listed here -->
+                </div>
+            </div>
+            
+            <!-- Add Event Form -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">Add Garden Event</h3>
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <input type="date" id="eventDate" style="flex: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <select id="eventType" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="watering">💧 Watering</option>
+                        <option value="fertilizing">🌿 Fertilizing</option>
+                        <option value="pruning">✂️ Pruning</option>
+                        <option value="harvest">🌾 Harvest</option>
+                        <option value="planting">🌱 Planting</option>
+                        <option value="lawn">🌿 Lawn Care</option>
+                    </select>
+                </div>
+                <input type="text" id="eventDescription" placeholder="Event description..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                <button onclick="addCalendarEvent()" style="width: 100%; padding: 0.75rem; background: var(--garden-green); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Add to Calendar
+                </button>
+            </div>
+        </div>
+
+        <!-- Plants Tab -->
+        <div id="plants" class="tab-content">
+            <div class="plant-tracker">
+                <div class="plant-tracker-header">
+                    <div class="plant-tracker-title">Plant Tracker</div>
+                    <button onclick="showAddPlantModal()" style="background: var(--garden-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">
+                        + Add Plant
+                    </button>
+                </div>
+                <div class="plant-list" id="plantList">
+                    <!-- Plants will be listed here -->
+                </div>
+            </div>
+            
+            <!-- Plant Statistics -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">Plant Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="totalPlants">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Total Plants</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="needsWater">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Need Water</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="readyHarvest">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Ready to Harvest</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="avgGrowth">0%</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Avg Growth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Tab -->
+        <div id="weather" class="tab-content">
+            <div class="weather-widget" style="margin-bottom: 1rem;">
+                <div class="weather-header">
+                    <div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Current Weather</div>
+                        <div id="detailedWeather" style="font-size: 2rem; font-weight: 600;">--°C</div>
+                    </div>
+                    <div id="detailedWeatherIcon" style="font-size: 3rem;">⛅</div>
+                </div>
+                <div style="font-size: 1.1rem; margin-bottom: 0.5rem;" id="weatherDescription">--</div>
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <div class="weather-label">Feels Like</div>
+                        <div id="feelsLike">--°</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-label">Humidity</div>
+                        <div id="weatherHumidity">--%</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-label">Wind</div>
+                        <div id="weatherWind">-- km/h</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lawn Care Recommendation -->
+            <div class="lawn-care">
+                <div class="lawn-care-header">
+                    <div class="lawn-care-icon">🌿</div>
+                    <div class="lawn-care-title">Lawn Care Advice</div>
+                </div>
+                <div class="lawn-care-status" id="lawnStatus">Loading...</div>
+                <div class="lawn-care-suggestion" id="lawnSuggestion">
+                    Based on current weather conditions.
+                </div>
+            </div>
+            
+            <!-- Forecast -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">3-Day Forecast</h3>
+                <div id="weatherForecast">
+                    <!-- Forecast will be added here -->
+                </div>
+            </div>
+            
+            <!-- Weather Settings -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">Location Settings</h3>
+                <input type="text" id="locationInput" placeholder="City, Country" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                <button onclick="updateLocation()" style="width: 100%; padding: 0.75rem; background: var(--garden-green); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Update Location
+                </button>
+            </div>
+        </div>
+
+        <!-- Lawn Care Tab -->
+        <div id="lawn" class="tab-content">
+            <div class="lawn-care" style="margin-bottom: 1rem;">
+                <div class="lawn-care-header">
+                    <div class="lawn-care-icon">🌿</div>
+                    <div class="lawn-care-title">Lawn Care Tracker</div>
+                </div>
+                <div class="lawn-care-status" id="lawnCareStatus">Your lawn care schedule</div>
+                <div class="lawn-care-suggestion">
+                    Based on weather patterns and best practices.
+                </div>
+            </div>
+            
+            <!-- Lawn Care Schedule -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">Next Lawn Tasks</h3>
+                <div id="lawnTasks">
+                    <!-- Tasks will be added here -->
+                </div>
+            </div>
+            
+            <!-- Lawn Statistics -->
+            <div style="background: white; border-radius: 16px; padding: 1rem; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 1rem; color: var(--garden-green);">Lawn Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="lastCut">--</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Last Cut</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="nextCut">--</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Next Cut</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="cutFrequency">--</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Frequency</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--garden-green);" id="lawnHealth">Good</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Health</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Plant Modal -->
+    <div id="addPlantModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddPlantModal()">&times;</span>
+            <h2>Add New Plant</h2>
+            <div style="margin: 1rem 0;">
+                <input type="text" id="plantName" placeholder="Plant Name (e.g., Tomato)" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                <select id="plantType" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                    <option value="">Select Plant Type</option>
+                    <option value="vegetable">🥬 Vegetable</option>
+                    <option value="herb">🌿 Herb</option>
+                    <option value="fruit">🍓 Fruit</option>
+                    <option value="flower">🌺 Flower</option>
+                    <option value="shrub">🌳 Shrub</option>
+                </select>
+                <input type="date" id="plantDate" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                <input type="number" id="plantDays" placeholder="Days to harvest/maturity" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;">
+                <textarea id="plantNotes" placeholder="Additional notes..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem; min-height: 80px;"></textarea>
+            </div>
+            <button onclick="saveNewPlant()" style="width: 100%; padding: 0.75rem; background: var(--garden-green); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                Save Plant
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Garden memory with enhanced features
+        let gardenMemory = {
+            teachings: [],
+            plants: [],
+            calendarEvents: [],
+            weatherData: null,
+            lawnCare: {
+                lastCut: null,
+                frequency: 7, // days
+                tasks: [],
+                health: 'Good'
+            },
+            location: {
+                city: 'London',
+                country: 'GB',
+                lat: 51.5074,
+                lon: -0.1278
+            },
+            settings: {
+                temperatureUnit: 'C',
+                dateFormat: 'dd/mm/yyyy'
+            }
+        };
+
+        // Weather API Configuration (Using OpenWeatherMap)
+        const WEATHER_API_KEY = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+        const WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+        const FORECAST_API_URL = 'https://api.openweathermap.org/data/2.5/forecast';
+
+        // Current date for calendar
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Load from localStorage
+        function loadMemory() {
+            const saved = localStorage.getItem('gardenbuddy_memory');
+            if (saved) {
+                try {
+                    gardenMemory = JSON.parse(saved);
+                    updateAllDisplays();
+                    fetchWeatherData();
+                } catch (e) {
+                    console.error('Failed to load memory:', e);
+                }
+            } else {
+                // Initialize with sample data
+                initializeSampleData();
+            }
+        }
+
+        // Initialize sample data for first-time users
+        function initializeSampleData() {
+            gardenMemory.calendarEvents = [
+                {
+                    id: 1,
+                    date: new Date().toISOString().split('T')[0],
+                    type: 'watering',
+                    description: 'Water tomato plants',
+                    emoji: '💧',
+                    completed: false
+                },
+                {
+                    id: 2,
+                    date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+                    type: 'fertilizing',
+                    description: 'Apply organic fertilizer',
+                    emoji: '🌿',
+                    completed: false
+                }
+            ];
+
+            gardenMemory.plants = [
+                {
+                    id: 1,
+                    name: 'Tomato',
+                    type: 'vegetable',
+                    emoji: '🍅',
+                    plantedDate: new Date(Date.now() - 86400000 * 30).toISOString(),
+                    daysToMature: 70,
+                    lastWatered: new Date(Date.now() - 86400000).toISOString(),
+                    waterFrequency: 2,
+                    status: 'growing',
+                    notes: 'Cherry tomatoes in raised bed'
+                },
+                {
+                    id: 2,
+                    name: 'Basil',
+                    type: 'herb',
+                    emoji: '🌿',
+                    plantedDate: new Date(Date.now() - 86400000 * 20).toISOString(),
+                    daysToMature: 40,
+                    lastWatered: new Date(Date.now() - 86400000).toISOString(),
+                    waterFrequency: 1,
+                    status: 'healthy',
+                    notes: 'In kitchen window box'
+                }
+            ];
+
+            gardenMemory.lawnCare.lastCut = new Date(Date.now() - 86400000 * 5).toISOString();
+            gardenMemory.lawnCare.tasks = [
+                { type: 'mow', due: new Date(Date.now() + 86400000 * 2).toISOString() },
+                { type: 'fertilize', due: new Date(Date.now() + 86400000 * 14).toISOString() }
+            ];
+
+            saveMemory();
+            updateAllDisplays();
+        }
+
+        // Save to localStorage
+        function saveMemory() {
+            try {
+                localStorage.setItem('gardenbuddy_memory', JSON.stringify(gardenMemory));
+                updateAllDisplays();
+            } catch (e) {
+                console.error('Failed to save memory:', e);
+            }
+        }
+
+        // Update all displays
+        function updateAllDisplays() {
+            updateStatsDisplay();
+            updatePlantDisplay();
+            updateCalendar();
+            updateLawnCareDisplay();
+            updateWeatherDisplay();
+        }
+
+        // ===== WEATHER FUNCTIONS =====
+        async function fetchWeatherData() {
+            try {
+                // For demo purposes, using static data since API key is required
+                // In production, uncomment the fetch calls and add your API key
+                
+                /*
+                const response = await fetch(
+                    `${WEATHER_API_URL}?q=${gardenMemory.location.city},${gardenMemory.location.country}&units=metric&appid=${WEATHER_API_KEY}`
+                );
+                const data = await response.json();
+                gardenMemory.weatherData = data;
+                */
+                
+                // Demo weather data
+                gardenMemory.weatherData = {
+                    main: {
+                        temp: 15,
+                        feels_like: 14,
+                        humidity: 65,
+                        pressure: 1015
+                    },
+                    weather: [{
+                        main: 'Clouds',
+                        description: 'scattered clouds',
+                        icon: '04d'
+                    }],
+                    wind: {
+                        speed: 12,
+                        deg: 230
+                    },
+                    clouds: {
+                        all: 40
+                    }
+                };
+                
+                updateWeatherDisplay();
+                updateLawnCareAdvice();
+            } catch (error) {
+                console.error('Error fetching weather:', error);
+                // Fallback to sample data
+                gardenMemory.weatherData = {
+                    main: { temp: 18, feels_like: 17, humidity: 60 },
+                    weather: [{ description: 'Partly cloudy' }],
+                    wind: { speed: 10 }
+                };
+                updateWeatherDisplay();
+            }
+        }
+
+        function updateWeatherDisplay() {
+            if (!gardenMemory.weatherData) return;
+            
+            const weather = gardenMemory.weatherData;
+            const temp = Math.round(weather.main.temp);
+            const feelsLike = Math.round(weather.main.feels_like);
+            const humidity = weather.main.humidity;
+            const windSpeed = Math.round(weather.wind.speed * 3.6); // Convert m/s to km/h
+            const description = weather.weather[0].description;
+            
+            // Get weather icon
+            const weatherIcon = getWeatherIcon(weather.weather[0].icon);
+            
+            // Update all weather displays
+            document.getElementById('currentWeather').innerHTML = `
+                <span id="weatherTemp">${temp}°</span>
+                <span id="weatherIcon">${weatherIcon}</span>
+            `;
+            
+            document.getElementById('chatWeather').innerHTML = `
+                <div class="weather-header">
+                    <div class="weather-icon">${weatherIcon}</div>
+                    <div class="weather-temp">${temp}°C</div>
+                </div>
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <div class="weather-label">Humidity</div>
+                        <div>${humidity}%</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-label">Wind</div>
+                        <div>${windSpeed} km/h</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-label">Rain</div>
+                        <div>${weather.clouds ? weather.clouds.all : '0'}%</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailedWeather').textContent = `${temp}°C`;
+            document.getElementById('detailedWeatherIcon').textContent = weatherIcon;
+            document.getElementById('weatherDescription').textContent = description;
+            document.getElementById('feelsLike').textContent = `${feelsLike}°C`;
+            document.getElementById('weatherHumidity').textContent = `${humidity}%`;
+            document.getElementById('weatherWind').textContent = `${windSpeed} km/h`;
+            
+            // Update profile modal
+            document.getElementById('profileWeather').textContent = `${temp}°C, ${description}`;
+            document.getElementById('profileWeatherIcon').textContent = weatherIcon;
+            
+            // Generate forecast (simplified for demo)
+            generateWeatherForecast();
+        }
+
+        function getWeatherIcon(iconCode) {
+            const iconMap = {
+                '01d': '☀️', '01n': '🌙',
+                '02d': '⛅', '02n': '☁️',
+                '03d': '☁️', '03n': '☁️',
+                '04d': '☁️', '04n': '☁️',
+                '09d': '🌧️', '09n': '🌧️',
+                '10d': '🌦️', '10n': '🌧️',
+                '11d': '⛈️', '11n': '⛈️',
+                '13d': '❄️', '13n': '❄️',
+                '50d': '🌫️', '50n': '🌫️'
+            };
+            return iconMap[iconCode] || '⛅';
+        }
+
+        function generateWeatherForecast() {
+            const forecastContainer = document.getElementById('weatherForecast');
+            const days = ['Today', 'Tomorrow', 'Day after'];
+            
+            forecastContainer.innerHTML = days.map((day, i) => {
+                const temp = Math.round(gardenMemory.weatherData.main.temp + (Math.random() * 4 - 2));
+                const icon = ['☀️', '⛅', '🌧️'][i];
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                        <div style="font-weight: 600;">${day}</div>
+                        <div style="font-size: 1.2rem;">${icon}</div>
+                        <div style="font-weight: 600;">${temp}°C</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateLawnCareAdvice() {
+            if (!gardenMemory.weatherData) return;
+            
+            const temp = gardenMemory.weatherData.main.temp;
+            const humidity = gardenMemory.weatherData.main.humidity;
+            const rainChance = gardenMemory.weatherData.clouds ? gardenMemory.weatherData.clouds.all : 0;
+            
+            let advice = '';
+            let suggestion = '';
+            
+            if (temp > 25) {
+                advice = 'Hot and dry - be careful!';
+                suggestion = 'Water deeply in early morning. Avoid cutting too short.';
+            } else if (temp < 5) {
+                advice = 'Too cold for growth';
+                suggestion = 'Lawn is dormant. No cutting needed.';
+            } else if (rainChance > 50) {
+                advice = 'Rain expected soon';
+                suggestion = 'Wait for dry weather before cutting.';
+            } else if (humidity > 80) {
+                advice = 'High humidity conditions';
+                suggestion = 'Watch for fungal diseases. Consider fungicide treatment.';
+            } else {
+                advice = 'Good conditions for lawn care';
+                suggestion = 'Ideal time for mowing and fertilizing.';
+            }
+            
+            document.getElementById('lawnStatus').textContent = advice;
+            document.getElementById('lawnSuggestion').textContent = suggestion;
+            document.getElementById('lawnCareStatus').textContent = advice;
+        }
+
+        function updateLocation() {
+            const locationInput = document.getElementById('locationInput').value;
+            if (locationInput) {
+                // In production, you would geocode this location
+                gardenMemory.location.city = locationInput.split(',')[0].trim();
+                fetchWeatherData();
+                alert(`Location updated to ${locationInput}`);
+            }
+        }
+
+        // ===== CALENDAR FUNCTIONS =====
+        function updateCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            // Update title
+            document.getElementById('calendarTitle').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Get first day of month
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay(); // 0 = Sunday
+            
+            // Generate calendar grid
+            let calendarHTML = '';
+            
+            // Day headers
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // Empty cells for days before the first
+            for (let i = 0; i < startingDay; i++) {
+                calendarHTML += `<div class="calendar-day"></div>`;
+            }
+            
+            // Days of the month
+            const today = new Date();
+            const currentDayEvents = [];
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasEvent = gardenMemory.calendarEvents.some(event => 
+                    event.date === dateStr
+                );
+                
+                const isToday = today.getDate() === day && 
+                               today.getMonth() === currentMonth && 
+                               today.getFullYear() === currentYear;
+                
+                let dayClass = 'calendar-day';
+                if (isToday) dayClass += ' today';
+                if (hasEvent) dayClass += ' has-event';
+                
+                calendarHTML += `
+                    <div class="${dayClass}" onclick="showDayEvents('${dateStr}')">
+                        ${day}
+                    </div>
+                `;
+                
+                // Collect today's events
+                if (isToday) {
+                    const todayEvents = gardenMemory.calendarEvents.filter(event => 
+                        event.date === dateStr
+                    );
+                    currentDayEvents.push(...todayEvents);
+                }
+            }
+            
+            document.getElementById('calendarGrid').innerHTML = calendarHTML;
+            
+            // Show today's events
+            updateCalendarEvents(currentDayEvents);
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar();
+        }
+
+        function showDayEvents(dateStr) {
+            const events = gardenMemory.calendarEvents.filter(event => 
+                event.date === dateStr
+            );
+            updateCalendarEvents(events);
+        }
+
+        function updateCalendarEvents(events) {
+            const container = document.getElementById('calendarEvents');
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary); padding: 1rem;">
+                        No events for this day
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = events.map(event => `
+                <div class="calendar-event">
+                    <div class="event-emoji">${event.emoji || '📅'}</div>
+                    <div class="event-content">
+                        <div class="event-title">${event.description}</div>
+                        <div class="event-date">${formatDate(event.date)}</div>
+                    </div>
+                    <button onclick="toggleEventCompletion(${event.id})" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+                        ${event.completed ? '✅' : '⬜'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addCalendarEvent() {
+            const date = document.getElementById('eventDate').value;
+            const type = document.getElementById('eventType').value;
+            const description = document.getElementById('eventDescription').value;
+            
+            if (!date || !description) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const emojiMap = {
+                'watering': '💧',
+                'fertilizing': '🌿',
+                'pruning': '✂️',
+                'harvest': '🌾',
+                'planting': '🌱',
+                'lawn': '🌿'
+            };
+            
+            const newEvent = {
+                id: Date.now(),
+                date: date,
+                type: type,
+                description: description,
+                emoji: emojiMap[type] || '📅',
+                completed: false
+            };
+            
+            gardenMemory.calendarEvents.push(newEvent);
+            saveMemory();
+            
+            // Clear form
+            document.getElementById('eventDate').value = '';
+            document.getElementById('eventDescription').value = '';
+            
+            // Show confirmation
+            alert(`Event added for ${formatDate(date)}`);
+            
+            // Update display
+            updateCalendar();
+        }
+
+        function toggleEventCompletion(eventId) {
+            const event = gardenMemory.calendarEvents.find(e => e.id === eventId);
+            if (event) {
+                event.completed = !event.completed;
+                saveMemory();
+                updateCalendar();
+            }
+        }
+
+        // ===== PLANT TRACKING FUNCTIONS =====
+        function updatePlantDisplay() {
+            const container = document.getElementById('plantList');
+            const plants = gardenMemory.plants;
+            
+            if (plants.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                        No plants added yet. Click "Add Plant" to get started!
+                    </div>
+                `;
+            } else {
+                container.innerHTML = plants.map(plant => {
+                    const plantedDate = new Date(plant.plantedDate);
+                    const daysSince = Math.floor((Date.now() - plantedDate) / 86400000);
+                    const progress = Math.min(100, Math.floor((daysSince / plant.daysToMature) * 100));
+                    
+                    const daysSinceWater = plant.lastWatered ? 
+                        Math.floor((Date.now() - new Date(plant.lastWatered)) / 86400000) : 999;
+                    const needsWater = daysSinceWater >= plant.waterFrequency;
+                    
+                    return `
+                        <div class="plant-item" onclick="showPlantDetails(${plant.id})">
+                            <div class="plant-emoji">${plant.emoji || '🌿'}</div>
+                            <div class="plant-info">
+                                <div class="plant-name">${plant.name}</div>
+                                <div class="plant-status">Planted: ${formatDate(plant.plantedDate)}</div>
+                                <div class="plant-progress">${progress}% complete</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                            </div>
+                            <div style="color: ${needsWater ? '#ff6b6b' : '#51cf66'}; font-size: 1.5rem;">
+                                ${needsWater ? '💧' : '✅'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Update statistics
+            updatePlantStatistics();
+        }
+
+        function updatePlantStatistics() {
+            const plants = gardenMemory.plants;
+            const total = plants.length;
+            const needsWater = plants.filter(p => {
+                if (!p.lastWatered) return true;
+                const daysSince = Math.floor((Date.now() - new Date(p.lastWatered)) / 86400000);
+                return daysSince >= p.waterFrequency;
+            }).length;
+            
+            const readyHarvest = plants.filter(p => {
+                const plantedDate = new Date(p.plantedDate);
+                const daysSince = Math.floor((Date.now() - plantedDate) / 86400000);
+                return daysSince >= p.daysToMature;
+            }).length;
+            
+            const avgGrowth = plants.length > 0 ? 
+                Math.floor(plants.reduce((sum, p) => {
+                    const plantedDate = new Date(p.plantedDate);
+                    const daysSince = Math.floor((Date.now() - plantedDate) / 86400000);
+                    return sum + Math.min(100, (daysSince / p.daysToMature) * 100);
+                }, 0) / plants.length) : 0;
+            
+            document.getElementById('totalPlants').textContent = total;
+            document.getElementById('needsWater').textContent = needsWater;
+            document.getElementById('readyHarvest').textContent = readyHarvest;
+            document.getElementById('avgGrowth').textContent = `${avgGrowth}%`;
+            document.getElementById('plantsCount').textContent = total;
+        }
+
+        function showAddPlantModal() {
+            document.getElementById('addPlantModal').style.display = 'flex';
+            document.getElementById('plantDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function closeAddPlantModal() {
+            document.getElementById('addPlantModal').style.display = 'none';
+        }
+
+        function saveNewPlant() {
+            const name = document.getElementById('plantName').value;
+            const type = document.getElementById('plantType').value;
+            const date = document.getElementById('plantDate').value;
+            const days = parseInt(document.getElementById('plantDays').value);
+            const notes = document.getElementById('plantNotes').value;
+            
+            if (!name || !type || !date || !days) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const emojiMap = {
+                'vegetable': '🥬',
+                'herb': '🌿',
+                'fruit': '🍓',
+                'flower': '🌺',
+                'shrub': '🌳'
+            };
+            
+            const newPlant = {
+                id: Date.now(),
+                name: name,
+                type: type,
+                emoji: emojiMap[type] || '🌿',
+                plantedDate: date,
+                daysToMature: days,
+                lastWatered: new Date().toISOString(),
+                waterFrequency: type === 'succulent' ? 7 : 2, // Default watering frequency
+                status: 'growing',
+                notes: notes
+            };
+            
+            gardenMemory.plants.push(newPlant);
+            saveMemory();
+            
+            // Clear form
+            document.getElementById('plantName').value = '';
+            document.getElementById('plantType').value = '';
+            document.getElementById('plantDays').value = '';
+            document.getElementById('plantNotes').value = '';
+            
+            // Close modal
+            closeAddPlantModal();
+            
+            // Show confirmation
+            alert(`${name} added to your garden!`);
+            
+            // Switch to plants tab
+            openTab('plants');
+        }
+
+        function showPlantDetails(plantId) {
+            const plant = gardenMemory.plants.find(p => p.id === plantId);
+            if (plant) {
+                const modal = document.getElementById('profileModal');
+                const plantedDate = new Date(plant.plantedDate);
+                const daysSince = Math.floor((Date.now() - plantedDate) / 86400000);
+                const progress = Math.min(100, Math.floor((daysSince / plant.daysToMature) * 100));
+                
+                document.querySelector('.modal-content').innerHTML = `
+                    <span class="close-button" onclick="toggleProfileModal()">&times;</span>
+                    <h2>${plant.emoji} ${plant.name}</h2>
+                    <p><strong>Type:</strong> ${plant.type}</p>
+                    <p><strong>Planted:</strong> ${formatDate(plant.plantedDate)}</p>
+                    <p><strong>Days since planting:</strong> ${daysSince}</p>
+                    <p><strong>Days to harvest:</strong> ${plant.daysToMature - daysSince}</p>
+                    <p><strong>Progress:</strong> ${progress}%</p>
+                    <div class="progress-bar" style="margin: 0.5rem 0;">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <p><strong>Watering:</strong> Every ${plant.waterFrequency} days</p>
+                    <p><strong>Status:</strong> ${plant.status}</p>
+                    <p><strong>Notes:</strong> ${plant.notes || 'None'}</p>
+                    
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button onclick="waterPlant(${plantId})" style="flex: 1; padding: 0.75rem; background: var(--sky-blue); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            💧 Water Now
+                        </button>
+                        <button onclick="openTab('calendar')" style="flex: 1; padding: 0.75rem; background: var(--seedling-sprout); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            📅 Add Care Task
+                        </button>
+                    </div>
+                `;
+                modal.style.display = 'flex';
+            }
+        }
+
+        function waterPlant(plantId) {
+            const plant = gardenMemory.plants.find(p => p.id === plantId);
+            if (plant) {
+                plant.lastWatered = new Date().toISOString();
+                saveMemory();
+                alert(`${plant.name} watered! Next watering in ${plant.waterFrequency} days.`);
+                toggleProfileModal();
+                openTab('plants');
+            }
+        }
+
+        // ===== LAWN CARE FUNCTIONS =====
+        function updateLawnCareDisplay() {
+            const lawn = gardenMemory.lawnCare;
+            
+            if (lawn.lastCut) {
+                const lastCutDate = new Date(lawn.lastCut);
+                const daysSince = Math.floor((Date.now() - lastCutDate) / 86400000);
+                const nextCutDate = new Date(lastCutDate.getTime() + lawn.frequency * 86400000);
+                
+                document.getElementById('lastCut').textContent = `${daysSince} days ago`;
+                document.getElementById('nextCut').textContent = formatDate(nextCutDate);
+                document.getElementById('cutFrequency').textContent = `${lawn.frequency} days`;
+                document.getElementById('lawnHealth').textContent = lawn.health;
+                
+                // Generate tasks
+                updateLawnTasks();
+            }
+        }
+
+        function updateLawnTasks() {
+            const container = document.getElementById('lawnTasks');
+            const lawn = gardenMemory.lawnCare;
+            const tasks = [
+                { type: 'Mowing', due: new Date(new Date(lawn.lastCut).getTime() + lawn.frequency * 86400000), emoji: '🌿' },
+                { type: 'Fertilizing', due: new Date(Date.now() + 86400000 * 30), emoji: '🌱' },
+                { type: 'Aeration', due: new Date(Date.now() + 86400000 * 90), emoji: '🕳️' },
+                { type: 'Weed Control', due: new Date(Date.now() + 86400000 * 14), emoji: '☘️' }
+            ];
+            
+            container.innerHTML = tasks.map(task => {
+                const daysUntil = Math.floor((task.due - Date.now()) / 86400000);
+                const dueText = daysUntil <= 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `In ${daysUntil} days`;
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="font-size: 1.2rem;">${task.emoji}</div>
+                            <div>
+                                <div style="font-weight: 600;">${task.type}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Due: ${dueText}</div>
+                            </div>
+                        </div>
+                        <button onclick="markLawnTaskComplete('${task.type}')" style="background: var(--garden-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">
+                            Done
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function markLawnTaskComplete(taskType) {
+            if (taskType === 'Mowing') {
+                gardenMemory.lawnCare.lastCut = new Date().toISOString();
+                saveMemory();
+                alert('Lawn mowing recorded!');
+                updateLawnCareDisplay();
+            } else {
+                alert(`${taskType} task completed!`);
+            }
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('teachingsCount').textContent = gardenMemory.teachings.length;
+            document.getElementById('lastUpdateTime').textContent = new Date().toLocaleTimeString();
+        }
+
+        function
