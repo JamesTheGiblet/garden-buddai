@@ -2,13 +2,110 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+// ============================================
+// STRIPE WEBHOOKS
+// ============================================
+
+/**
+ * Handle Stripe Webhooks
+ * POST /api/webhook
+ * 
+ * IMPORTANT: This must be BEFORE express.json() middleware
+ * or use express.raw() for this route specifically
+ */
+app.post('/api/webhook', 
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    
+    let event;
+    
+    try {
+      // Verify webhook signature
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error('Webhook signature verification failed:', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    
+    console.log('Webhook received:', event.type);
+    
+    // Handle different event types
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        console.log('Checkout completed:', session.id);
+        
+        // TODO: Update user to Pro in database
+        const { userId, plan } = session.metadata;
+        
+        // In production, you would:
+        // await db.users.update(userId, { 
+        //   isPro: true,
+        //   stripeCustomerId: session.customer,
+        //   stripeSubscriptionId: session.subscription,
+        //   plan: plan
+        // });
+        
+        console.log(`User ${userId} upgraded to ${plan}`);
+        break;
+      }
+      
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object;
+        console.log('Subscription updated:', subscription.id);
+        
+        // Handle tier changes, cancellations, etc.
+        break;
+      }
+      
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object;
+        console.log('Subscription cancelled:', subscription.id);
+        
+        // TODO: Downgrade user to free tier
+        break;
+      }
+      
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object;
+        console.log('Payment succeeded:', invoice.id);
+        
+        // Send receipt email, etc.
+        break;
+      }
+      
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object;
+        console.log('Payment failed:', invoice.id);
+        
+        // Send payment failure email
+        break;
+      }
+      
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+    
+    // Return 200 to acknowledge receipt
+    res.json({ received: true });
+  }
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 // --- Mock Database ---
@@ -205,6 +302,189 @@ app.post('/api/requests', verifyToken, (req, res) => {
 app.get('/api/plants', (req, res) => {
     res.json(PLANTS);
 });
+
+// ============================================
+// STRIPE CHECKOUT
+// ============================================
+
+/**
+ * Create Stripe Checkout Session
+ * POST /api/create-checkout
+ */
+app.post('/api/create-checkout', async (req, res) => {
+  try {
+    const { priceId, userId, userEmail, plan, returnUrl } = req.body;
+    
+    console.log('Creating checkout session:', { priceId, userId, plan });
+    
+    // Validate required fields
+    if (!priceId || !userEmail) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        details: { priceId: !!priceId, userEmail: !!userEmail }
+      });
+    }
+    
+    // Create Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      
+      // Customer info
+      customer_email: userEmail,
+      
+      // Metadata (to identify user later)
+      metadata: {
+        userId: userId || 'guest',
+        plan: plan || 'pro',
+        appType: plan?.includes('contractor') ? 'contractor' : 'consumer'
+      },
+      
+      // URLs
+      success_url: `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: returnUrl || `${process.env.APP_URL}/`,
+      
+      // Allow promo codes
+      allow_promotion_codes: true,
+      
+      // Billing info collection
+      billing_address_collection: 'auto',
+    });
+    
+    console.log('Checkout session created:', session.id);
+    
+    res.json({
+      sessionId: session.id,
+      url: session.url
+    });
+    
+  } catch (error) {
+    console.error('Stripe checkout error:', error);
+    res.status(500).json({
+      error: 'Failed to create checkout session',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * Get Checkout Session Details
+ * GET /api/checkout-session/:sessionId
+ */
+app.get('/api/checkout-session/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    
+    res.json({
+      status: session.payment_status,
+      customerEmail: session.customer_email,
+      metadata: session.metadata
+    });
+    
+  } catch (error) {
+    console.error('Session retrieval error:', error);
+    res.status(500).json({
+      error: 'Failed to retrieve session',
+      details: error.message
+    });
+  }
+});
+
+// ============================================
+// STRIPE CUSTOMER PORTAL
+// ============================================
+
+/**
+ * Create Customer Portal Session (manage subscription)
+ * POST /api/create-portal-session
+ */
+app.post('/api/create-portal-session', async (req, res) => {
+  try {
+    const { customerId, returnUrl } = req.body;
+    
+    if (!customerId) {
+      return res.status(400).json({ error: 'Customer ID required' });
+    }
+    
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: returnUrl || process.env.APP_URL,
+    });
+    
+    res.json({ url: portalSession.url });
+    
+  } catch (error) {
+    console.error('Portal session error:', error);
+    res.status(500).json({
+      error: 'Failed to create portal session',
+      details: error.message
+    });
+  }
+});
+
+// ============================================
+// SUBSCRIPTION STATUS
+// ============================================
+
+/**
+ * Get user's subscription status
+ * GET /api/subscription-status/:userId
+ */
+app.get('/api/subscription-status/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // TODO: Get from database
+    // For now, return mock data
+    const user = MOCK_USERS[userId] || {
+      isPro: false,
+      plan: 'free',
+      stripeCustomerId: null,
+      stripeSubscriptionId: null
+    };
+    
+    // If user has subscription, get details from Stripe
+    if (user.stripeSubscriptionId) {
+      const subscription = await stripe.subscriptions.retrieve(
+        user.stripeSubscriptionId
+      );
+      
+      return res.json({
+        isPro: subscription.status === 'active',
+        plan: user.plan,
+        status: subscription.status,
+        currentPeriodEnd: subscription.current_period_end,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end
+      });
+    }
+    
+    res.json({
+      isPro: user.isPro || false,
+      plan: user.plan || 'free',
+      status: 'none'
+    });
+    
+  } catch (error) {
+    console.error('Subscription status error:', error);
+    res.status(500).json({
+      error: 'Failed to get subscription status',
+      details: error.message
+    });
+  }
+});
+
+// Mock users database (replace with real DB)
+const MOCK_USERS = {};
+
+console.log('Stripe routes initialized');
 
 app.listen(PORT, () => {
     console.log(`GardenBuddy API running at http://localhost:${PORT}`);

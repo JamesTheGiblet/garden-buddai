@@ -874,6 +874,83 @@
             background: var(--seedling-sprout);
             color: white;
         }
+        
+        /* Upgrade Modal Styles */
+        .pricing-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pricing-card {
+            background: var(--morning-dew);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .pricing-card:hover {
+            border-color: var(--garden-green);
+            transform: translateY(-2px);
+        }
+        .pricing-card.popular {
+            border-color: var(--garden-green);
+            background: #f0f7e6;
+        }
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--garden-green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--garden-green);
+            margin: 0.5rem 0;
+        }
+        .price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .savings {
+            color: var(--sunset-tomato);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .pricing-card li {
+            margin-bottom: 0.5rem;
+        }
+        .upgrade-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--garden-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1141,21 +1218,52 @@
             </div>
         </div>
 
-        <!-- Pro Feature Modal -->
-        <div id="proModal" class="modal">
-            <div class="modal-content pro-modal-content">
-                <span class="close-button" onclick="toggleProModal()">&times;</span>
-                <div class="pro-modal-icon">🚀</div>
-                <h2 id="proModalTitle">GardenBuddy Pro</h2>
-                <p id="proModalSubtitle"><strong>AI Plant Diagnosis</strong> from photos is coming soon!</p>
-                <p id="proModalDesc" class="pro-modal-desc">
-                    We are training our vision models to detect pests and diseases automatically. Be the first to know when it launches.
-                </p>
-                <div class="request-form">
-                    <input class="request-input" id="proEmail" placeholder="Enter your email" />
-                    <button class="submit-button" type="button" onclick="joinWaitlist()">Join Waitlist</button>
-                </div>
+        <!-- Upgrade Modal -->
+        <div id="upgradeModal" class="modal" style="display: none;">
+          <div class="modal-content">
+            <button class="close-button" onclick="closeUpgradeModal()">×</button>
+            
+            <h2>🌟 Upgrade to Pro</h2>
+            <p style="margin-bottom: 2rem;">Unlock unlimited plants and advanced features</p>
+            
+            <!-- Pricing Options -->
+            <div class="pricing-options">
+              <!-- Monthly Plan -->
+              <div class="pricing-card" onclick="selectPlan('monthly')">
+                <h3>Monthly</h3>
+                <div class="price">£2.99<span>/month</span></div>
+                <ul>
+                  <li>✓ Unlimited plants</li>
+                  <li>✓ Voice input</li>
+                  <li>✓ Photo analysis</li>
+                  <li>✓ Priority support</li>
+                </ul>
+                <button class="upgrade-button" onclick="handleUpgrade('monthly')">
+                  Choose Monthly
+                </button>
+              </div>
+              
+              <!-- Yearly Plan (Save 20%) -->
+              <div class="pricing-card popular" onclick="selectPlan('yearly')">
+                <span class="popular-badge">Save 20%</span>
+                <h3>Yearly</h3>
+                <div class="price">£28.99<span>/year</span></div>
+                <div class="savings">Save £6.89/year</div>
+                <ul>
+                  <li>✓ Everything in Monthly</li>
+                  <li>✓ 2 months free</li>
+                  <li>✓ Early access to features</li>
+                </ul>
+                <button class="upgrade-button" onclick="handleUpgrade('yearly')">
+                  Choose Yearly
+                </button>
+              </div>
             </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">
+              💳 Secure payment via Stripe • Cancel anytime
+            </p>
+          </div>
         </div>
 
         <!-- Add Plant Modal -->
@@ -2405,26 +2513,12 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
         }
 
         function toggleProModal() {
-            const modal = document.getElementById('proModal');
-            // Reset text to default if opening
-            if (modal.style.display !== 'flex' && modal.style.display !== 'block') {
-                 const title = document.getElementById('proModalTitle');
-                 if (title) title.innerText = "GardenBuddy Pro";
-                 
-                 const sub = document.getElementById('proModalSubtitle');
-                 if (sub) sub.innerHTML = "<strong>AI Plant Diagnosis</strong> from photos is coming soon!";
-                 
-                 const desc = document.getElementById('proModalDesc');
-                 if (desc) desc.innerText = "We are training our vision models to detect pests and diseases automatically. Be the first to know when it launches.";
-            }
+            const modal = document.getElementById('upgradeModal');
             modal.style.display = (modal.style.display === 'flex' || modal.style.display === 'block') ? 'none' : 'flex';
         }
 
         function showProLimitModal() {
-            document.getElementById('proModalTitle').innerText = "Garden Limit Reached";
-            document.getElementById('proModalSubtitle').innerHTML = "<strong>Unlimited Plants</strong> is a Pro Feature.";
-            document.getElementById('proModalDesc').innerText = "You have reached the limit of 18 plants on the free plan. Join the waitlist for GardenBuddy Pro to track unlimited plants!";
-            document.getElementById('proModal').style.display = 'flex';
+            document.getElementById('upgradeModal').style.display = 'flex';
         }
 
         function joinWaitlist() {
@@ -2530,6 +2624,53 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
             openTab('plants');
         }
 
+        // --- Upgrade Logic ---
+        function closeUpgradeModal() {
+          document.getElementById('upgradeModal').style.display = 'none';
+        }
+
+        function selectPlan(plan) {
+            // Optional: Add visual selection logic
+            console.log('Selected plan:', plan);
+        }
+
+        function handleUpgrade(plan) {
+          const userEmail = getCurrentUserEmail() || prompt('Enter your email:');
+          
+          if (!userEmail) {
+            alert('Email required for checkout');
+            return;
+          }
+          
+          const userId = getCurrentUserId();
+          
+          // Call Stripe function
+          upgradeToPro(userEmail, userId, plan);
+        }
+
+        function getCurrentUserEmail() {
+          const memory = JSON.parse(localStorage.getItem('gardenbuddy_memory') || '{}');
+          return memory.userEmail || null;
+        }
+
+        function getCurrentUserId() {
+          const memory = JSON.parse(localStorage.getItem('gardenbuddy_memory') || '{}');
+          return memory.userId || 'guest_' + Date.now();
+        }
+
+        async function upgradeToPro(userEmail, userId, plan) {
+            const priceId = plan === 'yearly' ? 'price_YEARLY' : 'price_MONTHLY';
+            try {
+                const res = await fetch(`${API_BASE_URL}/create-checkout`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ priceId, userId, userEmail, plan })
+                });
+                const data = await res.json();
+                if(data.url) window.location.href = data.url;
+            } catch(e) { console.error(e); alert('Checkout failed'); }
+        }
+
         // Initialize on load
         window.addEventListener('load', () => {
             loadMemory();
@@ -2591,7 +2732,7 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
         window.onclick = function(event) {
             const modal = document.getElementById('profileModal');
             const settingsModal = document.getElementById('settingsModal');
-            const proModal = document.getElementById('proModal');
+            const upgradeModal = document.getElementById('upgradeModal');
             const addPlantModal = document.getElementById('addPlantModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -2599,8 +2740,8 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
             if (event.target === settingsModal) {
                 settingsModal.style.display = 'none';
             }
-            if (event.target === proModal) {
-                proModal.style.display = 'none';
+            if (event.target === upgradeModal) {
+                upgradeModal.style.display = 'none';
             }
             if (event.target === addPlantModal) {
                 addPlantModal.style.display = 'none';
