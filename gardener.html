@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GardenBuddy - Your Personal AI Gardening Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --earth-dark: #1a2910;
+            --garden-primary: #2D5016;
+            --fresh-growth: #4a7c2c;
+            --lawn-green: #6B9146;
+            --morning-light: #f4f7f0;
+            --tool-steel: #5a6268;
+            
+            --font-display: 'Bitter', serif;
+            --font-body: 'Work Sans', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-body);
+            color: var(--earth-dark);
+            line-height: 1.6;
+            background: var(--morning-light);
+        }
+        
+        .hero {
+            background: linear-gradient(165deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--garden-primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            color: var(--tool-steel);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--garden-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(45, 80, 22, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            background: var(--fresh-growth);
+        }
+        
+        .features {
+            padding: 4rem 2rem;
+            background: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .card {
+            padding: 2rem;
+            border-radius: 16px;
+            background: var(--morning-light);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        h2 {
+            font-family: var(--font-display);
+            color: var(--garden-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .contractor-section {
+            padding: 4rem 2rem;
+            background: var(--earth-dark);
+            color: white;
+            text-align: center;
+        }
+        
+        .contractor-section h2 {
+            color: white;
+        }
+        
+        .contractor-section p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-outline {
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--earth-dark);
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🌱</div>
+        <h1>Your Garden, <br>Powered by AI</h1>
+        <p>Track your plants, get weather-based advice, and connect with professional gardeners. 100% Free for home gardeners.</p>
+        <a href="GardenBuddy%20AI/index.html" class="btn">Launch GardenBuddy App</a>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div style="text-align: center;">
+                <h2>Everything You Need to Grow</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <span class="icon">🤖</span>
+                    <h3>AI Assistant</h3>
+                    <p>Chat with our AI to get instant advice about your specific plants and soil conditions.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📅</span>
+                    <h3>Smart Calendar</h3>
+                    <p>Never forget to water or prune. We track your garden's schedule automatically.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🌦️</span>
+                    <h3>Weather Aware</h3>
+                    <p>Get alerts when frost is coming or when it's the perfect time to mow the lawn.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">👨‍🌾</span>
+                    <h3>Connect with Pros</h3>
+                    <p>Scan your gardener's QR code to sync jobs and communicate directly through the app.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contractor-section">
+        <h2>Are you a Professional Gardener?</h2>
+        <p>We have a dedicated platform for contractors to manage clients, schedule jobs, and grow their business.</p>
+        <a href="index.html?role=contractor" class="btn-outline">Go to Contractor Platform</a>
+    </section>
+</body>
+</html>

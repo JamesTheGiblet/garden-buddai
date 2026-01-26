@@ -47,6 +47,52 @@
             --shadow-soft: 0 2px 12px rgba(45, 80, 22, 0.08);
             --shadow-strong: 0 4px 24px rgba(45, 80, 22, 0.15);
         }
+
+        /* Role Selection Modal */
+        .role-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .role-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .role-modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .role-modal.active .role-modal-content {
+            transform: translateY(0);
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
         
         * {
             margin: 0;
@@ -162,7 +208,7 @@
         
         .cta-primary {
             background: white;
-            color: var(--garden-primary);
+            color: var(--garden-primary) !important;
             box-shadow: var(--shadow-strong);
         }
         
@@ -1061,7 +1107,7 @@
                         <li>Email support</li>
                     </ul>
                     
-                    <a href="#signup" class="pricing-cta">Start 3-Month Trial</a>
+                    <a href="GardenManager%20AI/registration.html" class="pricing-cta">Start 3-Month Trial</a>
                     <p class="pricing-note">
                         No credit card required
                     </p>
@@ -1107,7 +1153,7 @@
                         <li>API access (Enterprise)</li>
                     </ul>
                     
-                    <a href="#signup" class="pricing-cta">Start Free Trial</a>
+                    <a href="GardenManager%20AI/registration.html" class="pricing-cta">Create Account</a>
                 </div>
             </div>
             
@@ -1293,18 +1339,11 @@
     <section class="final-cta" id="signup">
         <div class="container">
             <h2>Try Everything Free for 3 Months</h2>
-            <p>Join garden contractors who've stopped losing money to chaos. No credit card required.</p>
+            <p>Join garden contractors who've stopped losing money to chaos. Production ready.</p>
             
-            <form class="email-form" onsubmit="handleEarlyAccess(event)">
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    placeholder="your@email.com" 
-                    required
-                    id="earlyAccessEmail"
-                >
-                <button type="submit" class="email-submit">Start Free Trial</button>
-            </form>
+            <div style="margin: 2rem 0;">
+                <a href="GardenManager%20AI/registration.html" class="email-submit" style="text-decoration: none; display: inline-block;">Launch GardenManager Pro</a>
+            </div>
             
             <p class="trial-benefits">
                 ✓ Full access for 3 months &nbsp;&nbsp; ✓ Up to 5 clients &nbsp;&nbsp; ✓ No credit card required
@@ -1365,6 +1404,31 @@
     </footer>
     
     <script>
+        // Role Selection Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            
+            // If role is explicitly contractor, don't show modal
+            if (roleParam === 'contractor') return;
+
+            // Check if user has already selected a role
+            const savedRole = localStorage.getItem('gardenbuddy_role');
+            
+            if (!savedRole) {
+                document.getElementById('roleModal').classList.add('active');
+            }
+        });
+
+        function selectRole(role) {
+            localStorage.setItem('gardenbuddy_role', role);
+            if (role === 'gardener') {
+                window.location.href = 'gardener.html';
+            } else {
+                document.getElementById('roleModal').classList.remove('active');
+            }
+        }
+
         // FAQ Toggle
         document.querySelectorAll('.faq-item').forEach(item => {
             item.addEventListener('click', (e) => {
