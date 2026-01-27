@@ -106,6 +106,8 @@
                     <input class="request-input" id="settingApiKey" placeholder="Paste API Key here" />
                     <button class="submit-button settings-save-btn" type="button" onclick="saveSettings()">Save Settings</button>
                     <button class="submit-button replay-tutorial-btn" type="button" onclick="replayTutorial()">Replay Tutorial</button>
+                    <button class="submit-button clear-chat-btn" type="button" onclick="clearChatHistory()" style="background-color: #FF9800; margin-top: 0.5rem;">Clear Chat History</button>
+                    <button class="submit-button export-chat-btn" type="button" onclick="exportChatHistory()" style="background-color: #4CAF50; margin-top: 0.5rem;">Export Chat History</button>
                     <button class="submit-button clear-data-btn" type="button" onclick="clearAllData()">Clear All Data</button>
                     <button class="submit-button report-bug-btn" type="button" onclick="reportBug()">Report Bug</button>
                 </div>
@@ -538,6 +540,44 @@
 
             toggleSettingsModal();
             addMessage('assistant', `Settings updated! Location set to ${loc}.`);
+        }
+
+        // Clear Chat History
+        function clearChatHistory() {
+            if (confirm("Are you sure you want to clear your chat history?")) {
+                gardenMemory.chatHistory = [];
+                saveMemory();
+                location.reload();
+            }
+        }
+
+        // Export Chat History
+        function exportChatHistory() {
+            if (!gardenMemory.chatHistory || gardenMemory.chatHistory.length === 0) {
+                alert("No chat history to export.");
+                return;
+            }
+
+            let chatText = "Garden Buddy 4U - Chat History\n";
+            chatText += "Exported on: " + new Date().toLocaleString() + "\n\n";
+            chatText += "----------------------------------------\n\n";
+
+            gardenMemory.chatHistory.forEach(msg => {
+                const time = new Date(msg.timestamp).toLocaleString();
+                const sender = msg.type === 'user' ? 'You' : 'Garden Buddy';
+                let content = msg.content.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, "");
+                chatText += `[${time}] ${sender}:\n${content}\n\n`;
+            });
+
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gardenbuddy-chat-history-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Clear All Data
@@ -2028,6 +2068,8 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
         window.toggleShareModal = toggleShareModal;
         window.saveSettings = saveSettings;
         window.clearAllData = clearAllData;
+        window.clearChatHistory = clearChatHistory;
+        window.exportChatHistory = exportChatHistory;
         window.reportBug = reportBug;
         window.replayTutorial = replayTutorial;
         window.handleLogout = handleLogout;
