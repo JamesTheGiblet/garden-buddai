@@ -1,6 +1,6 @@
-# Contributing to Garden Buddy AI
+# Contributing to Garden Buddy 4U AI
 
-Thank you for your interest in contributing to Garden Buddy AI! We welcome contributions from the community to help improve and grow this project.
+Thank you for your interest in contributing to Garden Buddy 4U AI! We welcome contributions from the community to help improve and grow this project.
 
 ## How to Contribute
 
@@ -29,4 +29,4 @@ If you find a bug or have a feature request, please open an issue with a clear d
 
 If you have any questions, feel free to open an issue or start a discussion.
 
-Thank you for helping make Garden Buddy AI better!
+Thank you for helping make Garden Buddy 4U AI better!
