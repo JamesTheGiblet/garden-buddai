@@ -8,6 +8,21 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/svg+xml" href="../image/logo.svg">
     <link rel="stylesheet" href="../global/styles/client-app.css">
+    <style>
+        /* Move inline styles to here or to client-app.css */
+        .api-key-info {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        .external-link-white {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .external-link-primary {
+            color: var(--garden-primary);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -81,12 +96,12 @@
                         OpenWeatherMap API Key
                         <span class="info-icon" tabindex="0">?
                             <span class="info-tooltip">
-                                This data is saved locally. <a href="https://home.openweathermap.org/users/sign_up" target="_blank" style="color: #fff; text-decoration: underline;">Get a free API key here</a>.
+                                This data is saved locally. <a href="https://home.openweathermap.org/users/sign_up" target="_blank" rel="noopener noreferrer" class="external-link-white">Get a free API key here</a>.
                             </span>
                         </span>
                     </label>
-                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 0.5rem;">
-                        Don't have a key? <a href="https://home.openweathermap.org/users/sign_up" target="_blank" style="color: var(--garden-primary);">Sign up for free</a> to get weather updates.
+                    <div class="api-key-info">
+                        Don't have a key? <a href="https://home.openweathermap.org/users/sign_up" target="_blank" rel="noopener noreferrer" class="external-link-primary">Sign up for free</a> to get weather updates.
                     </div>
                     <input class="request-input" id="settingApiKey" placeholder="Paste API Key here" />
                     <button class="submit-button settings-save-btn" type="button" onclick="saveSettings()">Save Settings</button>
