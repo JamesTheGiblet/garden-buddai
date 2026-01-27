@@ -102,7 +102,7 @@ docker run -p 8080:80 gardenbuddy
 
 | Command | Example | Description |
 | ------- | ------- | ----------- |
-| **`/teach`** | `/teach I have two raised beds` | Teach GardenBuddy about your garden |
+| **`/teach`** | `/teach I have two raised beds` | Teach Garden Buddy 4U about your garden |
 | **`/plant`** | `/plant I planted tomatoes yesterday` | Add new plants to your garden |
 | **`/water`** | `/water all plants` | Mark plants as watered |
 | **`/weather`** | `/weather today` | Get current weather conditions |
@@ -482,7 +482,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **OpenWeatherMap** for weather data
 - **PlantNet** for plant database inspiration
 - **The gardening community** for feedback and testing
-- **All contributors** who make GardenBuddy better
+- **All contributors** who make Garden Buddy 4U better
 
 ## 📣 Stay Connected
 
@@ -510,4 +510,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-*GardenBuddy is part of the [BuddAI v2.0](https://buddai.example.com) ecosystem, bringing AI to everyday tasks.*
+*Garden Buddy 4U is part of the BuddAI v2.0 ecosystem, bringing AI to everyday tasks.*

@@ -23,8 +23,8 @@ The GardenBuddy ecosystem solves the communication and management gap between ga
 
 The two apps work together via a simple **QR Code Pairing** system:
 
-1. **Contractor** generates a QR code in *GardenManager Pro*.
-2. **Client** scans it using *GardenBuddy AI*.
+1. **Contractor** generates a QR code in *Garden Buddy 4U Pro*.
+2. **Client** scans it using *Garden Buddy 4U AI*.
 3. **Connected!** The contractor can now push job schedules, updates, and invoices directly to the client's app.
 
 ---
@@ -41,12 +41,12 @@ The two apps work together via a simple **QR Code Pairing** system:
 
 ```text
 garden-buddy-AI/
-├── GardenBuddy AI/       # Client Application (PWA)
+├── Garden Buddy 4U AI/       # Client Application (PWA)
 │   ├── index.html        # Main App Entry
 │   ├── sw.js             # Service Worker
 │   └── README.md         # Client App Documentation
 │
-├── GardenManager AI/     # Contractor Application (PWA)
+├── Garden Buddy 4U Pro/     # Contractor Application (PWA)
 │   ├── index.html        # Dashboard Entry
 │   ├── scan.html         # QR Scanner
 │   └── README.md         # Contractor App Documentation

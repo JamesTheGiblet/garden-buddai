@@ -1,6 +1,7 @@
 /**
  * Stripe Integration
  * Handles payment processing for GardenBuddy Pro upgrades
+ * Handles payment processing for Garden Buddy 4U Pro upgrades
  */
 
 // Initialize Stripe (publishable key safe for frontend)

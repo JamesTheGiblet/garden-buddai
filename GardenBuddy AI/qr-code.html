@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Gardener - GardenBuddy</title>
+    <title>My Gardener - Garden Buddy 4U</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -83,12 +83,12 @@
             }
             
             document.getElementById('clientIdDisplay').innerText = guestId;
-            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy://connect/${guestId}" alt="Pairing QR">`;
+            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy4u://connect/${guestId}" alt="Pairing QR">`;
         }
 
         function initUserView(user) {
             document.getElementById('clientIdDisplay').innerText = user.id.substring(0, 8);
-            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy://connect/${user.id}" alt="Pairing QR">`;
+            document.getElementById('pairing-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=gardenbuddy4u://connect/${user.id}" alt="Pairing QR">`;
 
             // Check for contractor metadata
             const contractorId = user.contractorId || user.user_metadata?.contractorId;

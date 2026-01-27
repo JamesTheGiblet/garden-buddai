@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GardenBuddy - Your Garden Intelligence</title>
+    <title>Garden Buddy 4U - Your Garden Intelligence</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/svg+xml" href="../image/logo.svg">
@@ -37,7 +37,7 @@
                     </svg>
                 </div>
                 <div class="header-text">
-                    <div class="header-title">GardenBuddy</div>
+                    <div class="header-title">Garden Buddy 4U</div>
                     <div class="header-subtitle">Your garden intelligence</div>
                 </div>
                 <button class="profile-button" type="button" onclick="toggleSettingsModal()">⚙️</button>
@@ -99,7 +99,7 @@
             <div class="modal-content tutorial-modal-content">
                 <div id="tutorialStep1" class="tutorial-step">
                     <div class="tutorial-step-icon">🌱</div>
-                    <h2>Welcome to GardenBuddy</h2>
+                    <h2>Welcome to Garden Buddy 4U</h2>
                     <p class="tutorial-step-desc">Your personal AI-powered gardening assistant that learns and grows with your garden.</p>
                     <button class="submit-button" type="button" onclick="nextTutorialStep(2)">Start Tour</button>
                 </div>
@@ -148,7 +148,7 @@
             <div class="chat-container" id="chatContainer">
                 <div class="welcome-message">
                     <div class="welcome-icon">🌱</div>
-                    <h2 class="welcome-title">Welcome to GardenBuddy</h2>
+                    <h2 class="welcome-title">Welcome to Garden Buddy 4U</h2>
                     <p class="welcome-text">
                         I'll learn about your specific garden and help you tend it successfully. 
                         Start by teaching me about your garden layout!
@@ -242,7 +242,7 @@
             <p class="upgrade-modal-desc">Unlock unlimited plants and advanced features</p>
             
             <div class="pro-features-grid">
-                <div class="pro-feature-item">🎤 <strong>Voice input</strong> - "Hey GardenBuddy, when should I water?"</div>
+                <div class="pro-feature-item">🎤 <strong>Voice input</strong> - "Hey Garden Buddy 4U, when should I water?"</div>
                 <div class="pro-feature-item">📸 <strong>Photo diagnosis</strong> - Upload sick plant → AI identifies issue</div>
                 <div class="pro-feature-item">📊 <strong>Advanced analytics</strong> - Plant health trends, harvest predictions</div>
                 <div class="pro-feature-item">🔔 <strong>Smart notifications</strong> - "Water tomatoes today" push alerts</div>
@@ -287,7 +287,7 @@
         <div id="shareModal" class="modal">
             <div class="modal-content share-modal-content">
                 <span class="close-button" onclick="toggleShareModal()">&times;</span>
-                <h2>Share GardenBuddy</h2>
+                <h2>Share Garden Buddy 4U</h2>
                 <p class="share-modal-desc">Scan to share with a friend</p>
                 
                 <div class="qr-share-container">
@@ -1261,7 +1261,7 @@ I'll update my understanding accordingly. Thank you for the correction!`;
             if (message === '/why') {
                 return `🤔 Let me explain my reasoning...
 
-As GardenBuddy, I base my responses on:
+As Garden Buddy 4U, I base my responses on:
 • What you've taught me about your specific garden
 • General gardening best practices
 • Pattern recognition from your previous interactions
@@ -1272,7 +1272,7 @@ Use /teach to give me more context for better advice!`;
             }
             
             if (message === '/help') {
-                return `🌱 **GardenBuddy Commands:**
+                return `🌱 **Garden Buddy 4U Commands:**
 
 **/teach** - Teach me something new
 • Example: /teach I have three raised beds
@@ -1647,7 +1647,7 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
         function joinWaitlist() {
             const email = document.getElementById('proEmail').value;
             if (email) {
-                alert(`Thanks! ${email} has been added to the GardenBuddy Pro waitlist.`);
+                alert(`Thanks! ${email} has been added to the Garden Buddy 4U Pro waitlist.`);
                 toggleProModal();
             } else {
                 alert('Please enter a valid email address.');
@@ -1762,7 +1762,7 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
             const email = currentUserEmail || prompt("Please enter your email address for the pro account:");
             if (!email) return;
             
-            const subject = `GardenBuddy Pro Upgrade Request - ${plan.toUpperCase()}`;
+            const subject = `Garden Buddy 4U Pro Upgrade Request - ${plan.toUpperCase()}`;
             const body = `I would like to upgrade to the ${plan} plan.\n\nUser ID: ${currentUserId || 'Guest'}\nEmail: ${email}\n\nPlease send me payment instructions.`;
             
             window.location.href = `mailto:gibletscreations@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -1800,7 +1800,7 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
         function shareNative() {
             if (navigator.share) {
                 navigator.share({
-                    title: 'GardenBuddy',
+                    title: 'Garden Buddy 4U',
                     text: 'Check out this AI garden assistant!',
                     url: window.location.href
                 }).catch(console.error);

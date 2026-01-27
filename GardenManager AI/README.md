@@ -1,16 +1,16 @@
-# 🌿 GardenManager Pro
+# 🌿 Garden Buddy 4U Pro
 
 > Professional Business Management for Garden Contractors
 
-**GardenManager Pro** is a complete business management system designed specifically for garden contractors, landscapers, and lawn care professionals. Manage clients, schedule jobs, track payments, and grow your business—all while giving your clients a FREE companion app that keeps you top-of-mind.
+**Garden Buddy 4U Pro** is a complete business management system designed specifically for garden contractors, landscapers, and lawn care professionals. Manage clients, schedule jobs, track payments, and grow your business—all while giving your clients a FREE companion app that keeps you top-of-mind.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://garden-buddy-ai.netlify.app/GardenManager%20AI/)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://garden-buddy-ai.netlify.app/Garden%20Buddy%204U%20Pro/)
 [![Status](https://img.shields.io/badge/status-beta-yellow)]()
 
 ---
 
-## 🌟 Why GardenManager Pro?
+## 🌟 Why Garden Buddy 4U Pro?
 
 ### The Problem You're Facing
 
@@ -24,11 +24,11 @@ As a garden contractor, you're likely dealing with:
 
 **Result:** You're losing £300-500/month in revenue and wasting 10+ hours/week on admin.
 
-### The GardenManager Pro Solution
+### The Garden Buddy 4U Pro Solution
 
 - ✅ **Affordable:** £20-50/month (vs £50-100+ competitors)
 - ✅ **Simple:** Built for garden contractors, not general trades
-- ✅ **Client App Included:** FREE GardenBuddy app for your clients
+- ✅ **Client App Included:** FREE Garden Buddy 4U app for your clients
 - ✅ **Quick Setup:** Working in 30 seconds, QR pairing in 30 more
 - ✅ **3-Month Free Trial:** Full access, no credit card required
 
@@ -39,11 +39,11 @@ As a garden contractor, you're likely dealing with:
 ### 📱 QR Client Pairing (30 Seconds)
 
 1. Client opens "My Gardener" tab in their app
-2. You click "Scan Client" in GardenManager Pro
+2. You click "Scan Client" in Garden Buddy 4U Pro
 3. Connected! Schedule jobs instantly
 4. Your business name in their pocket forever
 
-**The Secret:** Your clients use the FREE GardenBuddy app daily for their garden. They see YOUR business name every time. It's free marketing.
+**The Secret:** Your clients use the FREE Garden Buddy 4U app daily for their garden. They see YOUR business name every time. It's free marketing.
 
 ### 👥 Client Management
 
@@ -180,11 +180,11 @@ Standard demo with basic data.
 
 ---
 
-## 📱 The Client App (GardenBuddy)
+## 📱 The Client App (Garden Buddy 4U)
 
 ### What Your Clients Get (FREE Forever)
 
-**GardenBuddy AI** is a complete garden management app:
+**Garden Buddy 4U AI** is a complete garden management app:
 
 - 🤖 AI garden assistant (learns their garden)
 - 🌿 Plant tracking and reminders
@@ -205,7 +205,7 @@ Your clients use this app **daily** for their garden. Every time they open it:
 
 ### The Pairing Process (Client Side)
 
-1. **Download GardenBuddy** (free on web, iOS, Android)
+1. **Download Garden Buddy 4U** (free on web, iOS, Android)
 2. **Tap "Connect to Contractor"** in app
 3. **Scan your QR code** (you show on your phone)
 4. **Confirm connection** (one tap)
