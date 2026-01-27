@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - GardenBuddy Ecosystem</title>
+    <title>Register - GardenManager</title>
     <link rel="icon" type="image/svg+xml" href="../../image/logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/auth.css">
     <style>
-        .business-link {
+        .client-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
@@ -21,32 +21,35 @@
             padding-top: 1rem;
             border-top: 1px solid #eee;
         }
-        .business-link:hover { color: #2e7d32; text-decoration: underline; }
+        .client-link:hover { color: #2e7d32; text-decoration: underline; }
+        
+        /* Contractor specific styling */
+        .logo { filter: hue-rotate(180deg); }
+        .auth-btn { background-color: #2e7d32; }
+        .auth-btn:hover { background-color: #1b5e20; }
     </style>
 </head>
 <body>
     <a href="../../index.html" class="nav-home">← Home</a>
     <div class="auth-card">
-        <img src="../../image/logo.svg" alt="GardenBuddy" class="logo">
-        <h2>Join GardenBuddy</h2>
-        <p class="auth-subtitle">Create your free gardener account</p>
+        <img src="../../image/logo.svg" alt="GardenManager" class="logo">
+        <h2>Join GardenManager</h2>
+        <p class="auth-subtitle">Create your professional contractor account</p>
         
-        <input type="text" id="authName" class="auth-input" placeholder="Full Name">
-        <input type="email" id="authEmail" class="auth-input" placeholder="Email Address">
-        <!-- Input referenced from GardenBuddy AI/login.html in this repository. -->
+        <input type="text" id="authName" class="auth-input" placeholder="Business / Contact Name">
+        <input type="email" id="authEmail" class="auth-input" placeholder="Business Email">
         <input type="password" id="authPassword" class="auth-input" placeholder="Password">
         
         <div id="authError" class="auth-error"></div>
         
-        <button id="authRegisterBtn" class="auth-btn" type="button">Sign Up</button>
-        <!-- Button referenced from GardenBuddy AI/registration.html in this repository. -->
-        <button onclick="window.location.href='login.html'" class="auth-btn auth-toggle-btn" type="button">Already have an account?</button>
+        <button id="authRegisterBtn" class="auth-btn" type="button">Create Business Account</button>
+        <button onclick="window.location.href='login_contractor.html'" class="auth-btn auth-toggle-btn" type="button">Already have an account?</button>
         
         <div style="text-align: center; margin-top: 1rem;">
             <a onclick="handleResend(this)" style="color: #666; font-size: 0.85rem; text-decoration: underline; cursor: pointer;">Resend Verification Email</a>
         </div>
 
-        <a href="register_contractor.html" class="business-link">Register as Business / Contractor</a>
+        <a href="register.html" class="client-link">Register as Home Gardener</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -59,7 +62,7 @@
             const name = document.getElementById('authName').value;
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
-            const role = 'client';
+            const role = 'contractor';
             const errorEl = document.getElementById('authError');
             const btn = document.getElementById('authRegisterBtn');
 
@@ -78,12 +81,7 @@
 
                 if (data.session) {
                     localStorage.setItem('gb_token', data.session.access_token);
-                    
-                    if (role === 'contractor') {
-                        window.location.href = '../../GardenManager AI/index.html';
-                    } else {
-                        window.location.href = '../../GardenBuddy AI/index.html';
-                    }
+                    window.location.href = '../../GardenManager AI/index.html';
                 } else {
                     // Email confirmation required case
                     window.location.href = `check_email.html?email=${encodeURIComponent(email)}`;
@@ -91,7 +89,7 @@
             } catch (error) {
                 showError(error.message || "Registration failed");
                 btn.disabled = false;
-                btn.textContent = "Sign Up";
+                btn.textContent = "Create Business Account";
             }
         }
 
@@ -127,4 +125,4 @@
         }
     </script>
 </body>
-</html
+</html>

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - GardenBuddy Ecosystem</title>
+    <title>Login - GardenManager</title>
     <link rel="icon" type="image/svg+xml" href="../../image/logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/auth.css">
     <style>
-        .business-link {
+        .client-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
@@ -21,16 +21,22 @@
             padding-top: 1rem;
             border-top: 1px solid #eee;
         }
-        .business-link:hover { color: #2e7d32; text-decoration: underline; }
+        .client-link:hover { color: #2e7d32; text-decoration: underline; }
+        
+        /* Contractor specific styling */
+        .logo { filter: hue-rotate(180deg); }
+        .auth-btn { background-color: #2e7d32; }
+        .auth-btn:hover { background-color: #1b5e20; }
     </style>
 </head>
 <body>
     <a href="../../index.html" class="nav-home">← Home</a>
     <div class="auth-card">
-        <img src="../../image/logo.svg" alt="GardenBuddy" class="logo">
-        <h2>Welcome Back</h2>
-        <p class="auth-subtitle">Sign in to manage your garden</p>
-        <input type="email" id="authEmail" class="auth-input" placeholder="Email Address">
+        <img src="../../image/logo.svg" alt="GardenManager" class="logo">
+        <h2>GardenManager</h2>
+        <p class="auth-subtitle">Partner & Contractor Portal</p>
+        
+        <input type="email" id="authEmail" class="auth-input" placeholder="Business Email">
         <input type="password" id="authPassword" class="auth-input" placeholder="Password">
         <div class="remember-me">
             <input type="checkbox" id="rememberMe" checked>
@@ -39,26 +45,16 @@
         <a href="forgot_password.html" class="forgot-password">Forgot Password?</a>
         <div id="authError" class="auth-error"></div>
         
-        <button id="authMainBtn" class="auth-btn" type="button">Sign In</button>
-        <button onclick="window.location.href='register.html'" class="auth-btn auth-toggle-btn" type="button">Create Account</button>
+        <button id="authMainBtn" class="auth-btn" type="button">Business Sign In</button>
+        <button onclick="window.location.href='register_contractor.html'" class="auth-btn auth-toggle-btn" type="button">Create Account</button>
         
-        <a onclick="skipAuth()" class="guest-link">Continue as Guest (Home Gardeners only)</a>
-        <a href="login_contractor.html" class="business-link">Business / Contractor Login</a>
+        <a href="login.html" class="client-link">Home Gardener Login</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../../config.js"></script>
     <script src="../../supabase-client.js"></script>
     <script>
-        // UI Functions - defined globally to ensure availability
-        window.skipAuth = function() {
-            localStorage.setItem('guestMode', 'true');
-            window.location.href = '../../GardenBuddy AI/index.html';
-        }
-    </script>
-    <script>
-        // Auth is now available globally via window.auth
-
         async function handleLogin() {
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
@@ -67,12 +63,12 @@
             const remember = document.getElementById('rememberMe').checked;
 
             if (!email || !password) {
-                showError("Please enter email and password");
+                showError("Please enter business credentials");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerHTML = `<svg class="spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 3C21 3 19 13 10 16C5 17.5 2 16 2 16C2 16 5.5 13.5 8 10C10.5 6.5 10 2 10 2C10 2 17 2 21 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 16L4 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Signing In...`;
+            btn.innerHTML = `<svg class="spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 3C21 3 19 13 10 16C5 17.5 2 16 2 16C2 16 5.5 13.5 8 10C10.5 6.5 10 2 10 2C10 2 17 2 21 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 16L4 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Verifying...`;
             errorEl.style.display = 'none';
 
             try {
@@ -87,18 +83,23 @@
                         localStorage.removeItem('gb_token');
                     }
                     
-                    // Check role and redirect
+                    // Check role
                     const role = data.user.user_metadata?.role || 'client';
-                    if (role === 'contractor') {
-                        window.location.href = '../../GardenManager AI/index.html';
-                    } else {
-                        window.location.href = '../../GardenBuddy AI/index.html';
+                    
+                    if (role !== 'contractor') {
+                        await auth.signOut();
+                        showError("Access Denied: This portal is for Contractors only. Please use the Home Gardener login.");
+                        btn.disabled = false;
+                        btn.textContent = "Business Sign In";
+                        return;
                     }
+
+                    window.location.href = '../../GardenManager AI/index.html';
                 }
             } catch (error) {
                 showError(error.message || "Login failed");
                 btn.disabled = false;
-                btn.textContent = "Sign In";
+                btn.textContent = "Business Sign In";
             }
         }
 
@@ -109,13 +110,6 @@
         }
 
         document.getElementById('authMainBtn').onclick = handleLogin;
-        
-        // Check if already logged in
-        window.onload = () => {
-            if (localStorage.getItem('gb_token')) {
-                // Optional: Auto-redirect if token exists could be added here
-            }
-        };
     </script>
 </body>
 </html>

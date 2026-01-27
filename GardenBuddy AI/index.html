@@ -1965,16 +1965,11 @@ Import it anytime by pasting into LocalStorage or use /import (coming soon).`;
     </script>
 
     <!-- 🔥 SUPABASE INTEGRATION -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../config.js"></script>
-    <script type="module">
-        import { supabase, auth, db, realtime } from '../supabase-client.js';
-
-        // Make Supabase services available globally for the inline scripts
-        window.supabase = supabase;
-        window.supabaseAuth = auth;
-        window.db = db;
-        window.realtime = realtime;
-
+    <script src="../supabase-client.js"></script>
+    <script>
+        // Globals (supabase, auth, db, realtime) are now set by supabase-client.js
         console.log('✅ Supabase initialized from client.');
     </script>
 </body>
