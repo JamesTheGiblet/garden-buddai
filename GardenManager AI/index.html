@@ -387,7 +387,8 @@
             issues: [],
             harvests: [],
             version: '1.0.0',
-            settings: { location: 'London', apiKey: '' }
+            settings: { location: 'London', apiKey: '' },
+            chatHistory: []
         };
 
         // Wizard state
@@ -429,8 +430,16 @@
                     // Ensure new fields exist
                     if (!gardenMemory.settings) gardenMemory.settings = { location: 'London', apiKey: '' };
                     if (!gardenMemory.gists) gardenMemory.gists = [];
+                    if (!gardenMemory.chatHistory) gardenMemory.chatHistory = [];
                     
                     updateStatsDisplay();
+                    
+                    // Restore chat history
+                    if (gardenMemory.chatHistory && gardenMemory.chatHistory.length > 0) {
+                        gardenMemory.chatHistory.forEach(msg => {
+                            addMessage(msg.type, msg.content, true);
+                        });
+                    }
                 } catch (e) {
                     console.error('Failed to load memory:', e);
                 }
@@ -798,11 +807,11 @@
         }
 
         // Add message to chat
-        function addMessage(type, content) {
+        function addMessage(type, content, isRestoring = false) {
             const chatContainer = document.getElementById('chatContainer');
             
-            // Remove welcome message if it's the first user message
-            if (type === 'user') {
+            // Remove welcome message if it's the first user message or restoring history
+            if (type === 'user' || isRestoring) {
                 const welcome = chatContainer.querySelector('.welcome-message');
                 if (welcome) welcome.remove();
             }
@@ -813,13 +822,13 @@
             let commandBadge = '';
             if (content.startsWith('/teach')) {
                 commandBadge = '<div class="command-badge">📚 TEACHING</div>';
-                processTeaching(content);
+                if (!isRestoring) processTeaching(content);
             } else if (content.startsWith('/wrong')) {
                 commandBadge = '<div class="command-badge">✏️ CORRECTION</div>';
-                processCorrection(content);
+                if (!isRestoring) processCorrection(content);
             } else if (content.startsWith('/why')) {
                 commandBadge = '<div class="command-badge">🤔 WHY</div>';
-                processWhy(content);
+                if (!isRestoring) processWhy(content);
             } else if (content.startsWith('/help') || content.startsWith('/stats') || content.startsWith('/export')) {
                 commandBadge = '<div class="command-badge">ℹ️ COMMAND</div>';
             }
@@ -833,6 +842,14 @@
             `;
             
             chatContainer.appendChild(messageDiv);
+            
+            // Save to history
+            if (!isRestoring) {
+                if (!gardenMemory.chatHistory) gardenMemory.chatHistory = [];
+                gardenMemory.chatHistory.push({ type, content, timestamp: Date.now() });
+                if (gardenMemory.chatHistory.length > 50) gardenMemory.chatHistory.shift();
+                saveMemory();
+            }
             
             // Scroll to bottom
             setTimeout(() => {
