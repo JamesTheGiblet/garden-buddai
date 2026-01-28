@@ -42,11 +42,11 @@
         <!-- Button referenced from GardenBuddy AI/registration.html in this repository. -->
         <button onclick="window.location.href='login.html'" class="auth-btn auth-toggle-btn" type="button">Already have an account?</button>
         
-        <div style="text-align: center; margin-top: 1rem;">
-            <a onclick="handleResend(this)" style="color: #666; font-size: 0.85rem; text-decoration: underline; cursor: pointer;">Resend Verification Email</a>
+        <div class="resend-container">
+            <a onclick="handleResend(this)" class="resend-link">Resend Verification Email</a>
         </div>
         
-        <a onclick="skipAuth()" class="business-link" style="cursor: pointer;">Continue as Guest (Home Gardeners only)</a>
+        <a onclick="skipAuth()" class="business-link guest-link">Continue as Guest (Home Gardeners only)</a>
 
         <a href="register_contractor.html" class="business-link">Register as Business / Contractor</a>
     </div>

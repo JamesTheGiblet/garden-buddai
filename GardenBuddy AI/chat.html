@@ -13,6 +13,20 @@
         .api-key-info { font-size: 0.75rem; color: #666; margin-bottom: 0.5rem; }
         .external-link-white { color: #fff; text-decoration: underline; }
         .external-link-primary { color: var(--garden-primary); }
+        .no-history-message {
+            padding: 1rem;
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .clear-chat-btn {
+            background-color: #FF9800;
+            margin-top: 0.5rem;
+        }
+        .export-chat-btn {
+            background-color: #4CAF50;
+            margin-top: 0.5rem;
+        }
 
         /* Sidebar & Layout Styles */
         .chat-wrapper {
@@ -206,8 +220,8 @@
                     <input class="request-input" id="settingApiKey" placeholder="Paste API Key here" />
                     <button class="submit-button settings-save-btn" type="button" onclick="saveSettings()">Save Settings</button>
                     <button class="submit-button replay-tutorial-btn" type="button" onclick="replayTutorial()">Replay Tutorial</button>
-                    <button class="submit-button clear-chat-btn" type="button" onclick="clearChatHistory()" style="background-color: #FF9800; margin-top: 0.5rem;">Clear Chat History</button>
-                    <button class="submit-button export-chat-btn" type="button" onclick="exportChatHistory()" style="background-color: #4CAF50; margin-top: 0.5rem;">Export Chat History</button>
+                    <button class="submit-button clear-chat-btn" type="button" onclick="clearChatHistory()">Clear Chat History</button>
+                    <button class="submit-button export-chat-btn" type="button" onclick="exportChatHistory()">Export Chat History</button>
                     <button class="submit-button clear-data-btn" type="button" onclick="clearAllData()">Clear All Data</button>
                     <button class="submit-button report-bug-btn" type="button" onclick="reportBug()">Report Bug</button>
                 </div>
@@ -281,8 +295,8 @@
                 <!-- Main Chat Area -->
                 <div class="chat-main-area">
                     <div class="chat-container" id="chatContainer">
-                        <div style="padding: 0.5rem;">
-                            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" style="background:#f0f0f0; border-radius:4px; padding:2px 8px;">☰ History</button>
+                        <div class="sidebar-toggle-container">
+                            <button class="sidebar-toggle-btn sidebar-toggle-history-btn" type="button" onclick="toggleSidebar()">☰ History</button>
                         </div>
                         <div class="welcome-message">
                             <div class="welcome-icon">🌱</div>
@@ -1690,7 +1704,7 @@
             list.innerHTML = '';
             
             if (!gardenMemory.chatHistory || gardenMemory.chatHistory.length === 0) {
-                list.innerHTML = '<div style="padding:1rem; color:#999; font-size:0.9rem; text-align:center;">No history yet</div>';
+                list.innerHTML = '<div class="no-history-message">No history yet</div>';
                 return;
             }
             
@@ -1766,130 +1780,6 @@
                     const msg = welcomeMsgs[Math.floor(Math.random() * welcomeMsgs.length)];
                     
                     tip.innerHTML = `<div class="message-avatar">💡</div><div class="message-content"><div class="message-bubble">${formatMessage(msg)}</div></div>`;
-                    chatContainer.appendChild(tip);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-            }, 2000);
-        });
-        window.addEventListener('beforeunload', saveMemory);
-        window.onclick = function(event) {
-            const modal = document.getElementById('profileModal');
-            const settingsModal = document.getElementById('settingsModal');
-            const upgradeModal = document.getElementById('upgradeModal');
-            const shareModal = document.getElementById('shareModal');
-            if (event.target === modal) modal.style.display = 'none';
-            if (event.target === settingsModal) settingsModal.style.display = 'none';
-            if (event.target === upgradeModal) upgradeModal.style.display = 'none';
-            if (event.target === shareModal) shareModal.style.display = 'none';
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../config.js"></script>
-    <script src="../supabase-client.js"></script>
-    <script>console.log('✅ Supabase initialized from client.');</script>
-</body>
-</html>
-            if (!email) return;
-            const subject = `Garden Buddy 4U Pro Upgrade Request - ${plan.toUpperCase()}`;
-            const body = `I would like to upgrade to the  plan.\n\nUser ID: ${currentUserId || 'Guest'}\nEmail: \n\nPlease send me payment instructions.`;
-            window.location.href = `mailto:gibletscreations@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            closeUpgradeModal();
-        }
-        function toggleShareModal() {
-            const modal = document.getElementById('shareModal');
-            modal.style.display = (modal.style.display === 'flex' || modal.style.display === 'block') ? 'none' : 'flex';
-            if (modal.style.display === 'flex') {
-                const url = window.location.href;
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&ecc=H&margin=0`;
-                document.getElementById('shareQrCode').src = qrUrl;
-                const nativeBtn = document.getElementById('nativeShareBtn');
-                if (navigator.share) nativeBtn.style.display = 'inline-block'; else nativeBtn.style.display = 'none';
-            }
-        }
-        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => { alert('Link copied to clipboard!'); }); }
-        function shareNative() { if (navigator.share) navigator.share({ title: 'Garden Buddy 4U', text: 'Check out this AI garden assistant!', url: window.location.href }).catch(console.error); }
-
-        // Sidebar Functions
-        function toggleSidebar() {
-            const sidebar = document.getElementById('chatSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-
-        function renderHistorySidebar() {
-            const list = document.getElementById('historyList');
-            if (!list) return;
-            list.innerHTML = '';
-            
-            if (!gardenMemory.chatHistory || gardenMemory.chatHistory.length === 0) {
-                list.innerHTML = '<div style="padding:1rem; color:#999; font-size:0.9rem; text-align:center;">No history yet</div>';
-                return;
-            }
-            
-            // Group by date
-            const groups = {};
-            gardenMemory.chatHistory.forEach(msg => {
-                if (msg.type === 'user') {
-                    const date = new Date(msg.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                    if (!groups[date]) groups[date] = [];
-                    groups[date].push(msg);
-                }
-            });
-            
-            Object.keys(groups).reverse().forEach(date => {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'history-group';
-                groupDiv.innerHTML = `<div class="history-date">${date}</div>`;
-                
-                groups[date].reverse().forEach(msg => {
-                    const item = document.createElement('div');
-                    item.className = 'history-item';
-                    item.textContent = msg.content.substring(0, 40) + (msg.content.length > 40 ? '...' : '');
-                    item.onclick = () => {
-                        // In a real app, this might scroll to message or load session
-                        // For now, just close sidebar on mobile
-                        if (window.innerWidth <= 768) toggleSidebar();
-                    };
-                    groupDiv.appendChild(item);
-                });
-                list.appendChild(groupDiv);
-            });
-        }
-
-        window.addEventListener('load', async () => {
-            const token = localStorage.getItem('gb_token') || sessionStorage.getItem('gb_token');
-            const guest = localStorage.getItem('guestMode');
-            if (!token && !guest) { window.location.href = '../global/login/login.html'; return; }
-            loadMemory();
-            initializePlantDatabase();
-            loadKnowledgeBase();
-            if (window.supabase && token) {
-                const { data: { session } } = await window.supabaseAuth.getSession();
-                if (session) {
-                    authToken = session.access_token;
-                    if (localStorage.getItem('gb_token')) localStorage.setItem('gb_token', authToken); else sessionStorage.setItem('gb_token', authToken);
-                    await initUserData(session.user);
-                } else {
-                    localStorage.removeItem('gb_token'); sessionStorage.removeItem('gb_token');
-                    if (!guest) { window.location.href = '../global/login/login.html'; return; }
-                }
-                window.supabaseAuth.onAuthChange((event, session) => {
-                    if (event === 'SIGNED_OUT') { localStorage.removeItem('gb_token'); sessionStorage.removeItem('gb_token'); if (!localStorage.getItem('guestMode')) window.location.href = '../global/login/login.html'; }
-                    else if (event === 'TOKEN_REFRESHED' && session) { const newToken = session.access_token; if (localStorage.getItem('gb_token')) localStorage.setItem('gb_token', newToken); else sessionStorage.setItem('gb_token', newToken); }
-                });
-            } else if (guest) initGuestUI();
-            initVoiceInput();
-            initTutorial();
-            renderHistorySidebar();
-            setTimeout(() => { document.getElementById('userInput').focus(); }, 100);
-            window.addEventListener('orientationchange', () => { setTimeout(() => { const chatContainer = document.getElementById('chatContainer'); chatContainer.scrollTop = chatContainer.scrollHeight; }, 300); });
-            setTimeout(() => {
-                if (gardenMemory.teachings.length === 0) {
-                    const chatContainer = document.getElementById('chatContainer');
-                    const tip = document.createElement('div');
-                    tip.className = 'message assistant';
-                    tip.innerHTML = `<div class="message-avatar">💡</div><div class="message-content"><div class="message-bubble"><strong>Pro Tip:</strong> Start by teaching me about your garden layout with /teach, or tap a quick action above!</div></div>`;
                     chatContainer.appendChild(tip);
                     chatContainer.scrollTop = chatContainer.scrollHeight;
                 }
