@@ -109,6 +109,11 @@
             padding: 0.25rem;
         }
 
+        .sidebar-toggle-container,
+        .sidebar-header .sidebar-toggle-btn {
+            display: none;
+        }
+
         /* Mobile Responsive Sidebar */
         @media (max-width: 768px) {
             .chat-sidebar {
@@ -135,6 +140,15 @@
                 z-index: 15;
             }
             .sidebar-overlay.active { display: block; }
+
+            .sidebar-toggle-container {
+                display: block;
+                padding: 0.5rem;
+            }
+
+            .sidebar-header .sidebar-toggle-btn {
+                display: block;
+            }
         }
 
         /* Fix for text visibility */
