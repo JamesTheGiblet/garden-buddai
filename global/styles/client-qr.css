@@ -1,8 +1,8 @@
 @import 'client-variables.css';
 
-.content-area { padding: 1rem; max-width: 600px; margin: 0 auto; width: 100%; }
+.content-area { max-width: 600px; margin: 0 auto; width: 100%; }
 
-.stat-card {
+.pairing-card {
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;
