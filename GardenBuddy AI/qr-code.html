@@ -101,7 +101,7 @@
         <div class="tabs">
             <button class="tab-button" type="button" onclick="window.location.href='chat.html'">Chat</button>
             <button class="tab-button active" type="button" onclick="location.reload()">Contractor</button>
-            <button class="tab-button" type="button" onclick="window.location.href='index.html'">Plants</button>
+            <button class="tab-button" type="button" onclick="window.location.href='plants.html'">Plants</button>
             <button class="tab-button" type="button" onclick="window.location.href='calendar.html'">Calendar</button>
             <button class="tab-button" type="button" onclick="handleProTab()">Pro ⭐</button>
         </div>
@@ -131,7 +131,34 @@
         </div>
 
         <!-- Other Modals needed for header buttons -->
-        <div id="upgradeModal" class="modal upgrade-modal-hidden"></div>
+        <div id="upgradeModal" class="modal upgrade-modal-hidden">
+          <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeUpgradeModal()">×</button>
+            <h2>🌟 Upgrade to Pro</h2>
+            <p class="upgrade-modal-desc">Unlock unlimited plants and advanced features</p>
+            <div class="pro-features-grid">
+                <div class="pro-feature-item">🎤 <strong>Voice input</strong></div>
+                <div class="pro-feature-item">📸 <strong>Photo diagnosis</strong></div>
+                <div class="pro-feature-item">📊 <strong>Advanced analytics</strong></div>
+                <div class="pro-feature-item">🌱 <strong>Unlimited plants</strong></div>
+                <div class="pro-feature-item">☁️ <strong>Cloud backup</strong></div>
+            </div>
+            <div class="pricing-options">
+              <div class="pricing-card" onclick="selectPlan('monthly')">
+                <h3>Monthly</h3>
+                <div class="price">£2.99<span>/month</span></div>
+                <button class="upgrade-button" type="button" onclick="handleUpgrade('monthly')">Choose Monthly</button>
+              </div>
+              <div class="pricing-card popular" onclick="selectPlan('yearly')">
+                <span class="popular-badge">Save 20%</span>
+                <h3>Yearly</h3>
+                <div class="price">£28.99<span>/year</span></div>
+                <button class="upgrade-button" type="button" onclick="handleUpgrade('yearly')">Choose Yearly</button>
+              </div>
+            </div>
+            <p class="upgrade-modal-note">📧 Clicking choose will open your email client to request access.</p>
+          </div>
+        </div>
         <div id="shareModal" class="modal"></div>
     </div>
 
@@ -287,14 +314,28 @@
         }
 
         function showProLimitModal() {
-            // Placeholder for a real modal
-            alert("This is a Pro feature!");
+            const modal = document.getElementById('upgradeModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.remove('upgrade-modal-hidden');
+            }
         }
 
         // Dummy functions that are called but not defined in qr-code.html
         function toggleShareModal() { alert("Share modal placeholder"); }
 
         // --- End of Merged Script ---
+
+        function closeUpgradeModal() { document.getElementById('upgradeModal').style.display = 'none'; }
+        function selectPlan(plan) { console.log('Selected plan:', plan); }
+        function handleUpgrade(plan) {
+            const email = currentUserEmail || prompt("Please enter your email address for the pro account:");
+            if (!email) return;
+            const subject = `Garden Buddy 4U Pro Upgrade Request - ${plan.toUpperCase()}`;
+            const body = `I would like to upgrade to the ${plan} plan.\n\nUser ID: ${currentUserId || 'Guest'}\nEmail: ${email}\n\nPlease send me payment instructions.`;
+            window.location.href = `mailto:gibletscreations@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            closeUpgradeModal();
+        }
 
         // --- Original qr-code.html script logic ---
         async function sendContractorRequest() {

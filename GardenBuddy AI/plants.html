@@ -77,7 +77,34 @@
                 </div>
             </div>
         </div>
-        <div id="upgradeModal" class="modal"></div>
+        <div id="upgradeModal" class="modal">
+          <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeUpgradeModal()">×</button>
+            <h2>🌟 Upgrade to Pro</h2>
+            <p class="upgrade-modal-desc">Unlock unlimited plants and advanced features</p>
+            <div class="pro-features-grid">
+                <div class="pro-feature-item">🎤 <strong>Voice input</strong></div>
+                <div class="pro-feature-item">📸 <strong>Photo diagnosis</strong></div>
+                <div class="pro-feature-item">📊 <strong>Advanced analytics</strong></div>
+                <div class="pro-feature-item">🌱 <strong>Unlimited plants</strong></div>
+                <div class="pro-feature-item">☁️ <strong>Cloud backup</strong></div>
+            </div>
+            <div class="pricing-options">
+              <div class="pricing-card" onclick="selectPlan('monthly')">
+                <h3>Monthly</h3>
+                <div class="price">£2.99<span>/month</span></div>
+                <button class="upgrade-button" type="button" onclick="handleUpgrade('monthly')">Choose Monthly</button>
+              </div>
+              <div class="pricing-card popular" onclick="selectPlan('yearly')">
+                <span class="popular-badge">Save 20%</span>
+                <h3>Yearly</h3>
+                <div class="price">£28.99<span>/year</span></div>
+                <button class="upgrade-button" type="button" onclick="handleUpgrade('yearly')">Choose Yearly</button>
+              </div>
+            </div>
+            <p class="upgrade-modal-note">📧 Clicking choose will open your email client to request access.</p>
+          </div>
+        </div>
         <div id="shareModal" class="modal"></div>
         
         <!-- Add Plant Modal -->

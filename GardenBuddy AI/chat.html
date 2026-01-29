@@ -145,8 +145,8 @@
         <div class="tabs">
             <button class="tab-button active" type="button" onclick="location.reload()">Chat</button>
             <button class="tab-button" type="button" onclick="window.location.href='qr-code.html'">Contractor</button>
-            <button class="tab-button" type="button" onclick="window.location.href='index.html'">Plants</button>
-            <button class="tab-button" type="button" onclick="window.location.href='index.html#calendar'">Calendar</button>
+            <button class="tab-button" type="button" onclick="window.location.href='plants.html'">Plants</button>
+            <button class="tab-button" type="button" onclick="window.location.href='calendar.html'">Calendar</button>
             <button class="tab-button" type="button" onclick="handleProTab()">Pro ⭐</button>
         </div>
 
@@ -625,6 +625,22 @@
                     document.getElementById('userSubscription').innerText = 'Free Plan';
                 }
             } catch (e) { console.error('Pro check failed', e); }
+        }
+
+        function showProLimitModal() {
+            const modal = document.getElementById('upgradeModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.remove('upgrade-modal-hidden');
+            }
+        }
+
+        function toggleProModal() {
+            const modal = document.getElementById('upgradeModal');
+            if (modal) {
+                modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+                if (modal.style.display === 'flex') modal.classList.remove('upgrade-modal-hidden');
+            }
         }
 
         function addMessage(type, content, isRestoring = false) {
