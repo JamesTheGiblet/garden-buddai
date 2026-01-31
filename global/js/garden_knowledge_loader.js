@@ -90,7 +90,7 @@ class GardenKnowledgeLoader {
         }
 
         // Stop words to ignore in search
-        const stopWords = ['when', 'should', 'i', 'how', 'do', 'what', 'is', 'a', 'the', 'in', 'on', 'to', 'for', 'my', 'can', 'get', 'does', 'of', 'and'];
+        const stopWords = ['when', 'should', 'i', 'how', 'do', 'what', 'is', 'a', 'the', 'in', 'on', 'to', 'for', 'my', 'can', 'get', 'does', 'of', 'and', 'would', 'could', 'will', 'be', 'have', 'has', 'it', 'there', 'are', 'well'];
         
         const searchTerms = query.toLowerCase()
             .replace(/[?.,!]/g, '') // Remove punctuation

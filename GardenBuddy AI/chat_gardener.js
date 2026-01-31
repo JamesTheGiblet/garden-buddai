@@ -353,7 +353,22 @@ function searchKnowledgeBase(query) {
     if (knowledgeLoader) {
         const results = knowledgeLoader.searchKnowledge(query, 3);
         if (results.length > 0) {
-            const entry = results[0];
+            const topEntry = results[0];
+
+            // If we have multiple results and the top one isn't a strong topic match (score < 10),
+            // return a summary list instead of a single detailed entry.
+            if (results.length > 1 && topEntry.relevance < 10) {
+                let response = `📚 **Found ${results.length} related topics:**\n`;
+                results.forEach(entry => {
+                    const snippet = entry.quick_answer 
+                        ? (entry.quick_answer.length > 60 ? entry.quick_answer.substring(0, 60) + '...' : entry.quick_answer)
+                        : (entry.question || 'Details available');
+                    response += `\n• **${entry.topic}**: ${snippet}`;
+                });
+                return response;
+            }
+
+            const entry = topEntry;
             
             // User-taught knowledge takes priority
             if (entry.source === 'user-taught') {
