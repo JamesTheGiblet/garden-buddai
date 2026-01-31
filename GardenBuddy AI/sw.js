@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gardenbuddy-v4';
+const CACHE_NAME = 'gardenbuddy-v5';
 const ASSETS = [
     './',
     './index.html',
