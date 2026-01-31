@@ -1,8 +1,12 @@
-const CACHE_NAME = 'gardenbuddy-v2';
+const CACHE_NAME = 'gardenbuddy-v3';
 const ASSETS = [
     './',
     './index.html',
     './manifest.webmanifest',
+    './chat_main.js',
+    './chat_social.js',
+    './chat_gardener.js',
+    '../global/js/garden_knowledge_loader.js',
     '../image/logo.svg',
     '../config.js',
     '../supabase-client.js'
